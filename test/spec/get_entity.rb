@@ -28,9 +28,9 @@ Struct.new(:entity, :version, :retrieved_time)
 require_relative 'spec_init'
 
 describe "Get Entity from Store" do
-  stream_name = EventStore::EntityProjection::Controls::Writer.write 'someEntity'
+  stream_name = EventStore::EntityStore::Controls::Writer.write 'someEntity'
 
-  entity = EventStore::EntityProjection::Controls::Entity.example
+  entity = EventStore::EntityStore::Controls::Entity.example
 
   # EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
 
