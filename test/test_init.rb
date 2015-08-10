@@ -8,7 +8,7 @@ require_relative '../init.rb'
 require 'runner'
 require 'fixture'
 
-require 'event_store/entity_projection/controls'
+require 'event_store/entity_store/controls'
 
 TestLogger = Telemetry::Logger.get 'Test Output'
 

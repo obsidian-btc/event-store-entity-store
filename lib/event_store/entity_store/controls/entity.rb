@@ -1,18 +1,7 @@
 module EventStore
-  module EntityProjection
+  module EntityStore
     module Controls
-      module Entity
-        class SomeEntity
-          include Schema::DataStructure
-
-          attribute :some_attribute
-          attribute :some_time
-        end
-
-        def self.example
-          SomeEntity.build
-        end
-      end
+      Entity = EventStore::EntityProjection::Controls::Entity
     end
   end
 end

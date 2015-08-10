@@ -1,11 +1,7 @@
 module EventStore
-  module EntityProjection
+  module EntityStore
     module Controls
-      module StreamName
-        def self.get(category=nil, id=nil, random: nil)
-          EventStore::Client::HTTP::Controls::StreamName.get category, id, random: random
-        end
-      end
+      StreamName = EventStore::EntityProjection::Controls::StreamName
     end
   end
 end
