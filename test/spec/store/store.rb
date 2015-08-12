@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'store_init'
 
 describe "Store" do
   specify "Avails the \"category\" macro" do

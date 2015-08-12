@@ -8,6 +8,7 @@ module EventStore
         cls.extend Build
 
         cls.send :include, EventStore::Messaging::StreamName
+        cls.send :dependency, :cache, EntityStore::Cache
         cls.send :dependency, :logger, Telemetry::Logger
       end
 
@@ -39,6 +40,7 @@ module EventStore
         def build
           logger.trace "Building entity store"
           new.tap do |instance|
+            EntityStore::Cache.configure instance
             Telemetry::Logger.configure instance
             logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
           end
@@ -56,7 +58,9 @@ module EventStore
 
         projection_class.! entity, stream_name
 
-        logger.trace "Got entity: #{Store.entity_log_msg(entity)}"
+        cache.put id, entity
+
+        logger.debug "Got entity: #{Store.entity_log_msg(entity)} (ID: #{id})"
 
         entity
       end

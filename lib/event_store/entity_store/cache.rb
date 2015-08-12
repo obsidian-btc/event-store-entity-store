@@ -3,8 +3,8 @@ module EventStore
     class Cache
       dependency :logger, Telemetry::Logger
 
-      def items
-        @items ||= {}
+      def entities
+        @entities ||= {}
       end
 
       def self.build
@@ -13,12 +13,29 @@ module EventStore
         end
       end
 
+      def self.configure(receiver)
+        instance = build
+        receiver.cache = instance
+        instance
+      end
+
       def get(id)
-        items[id]
+        logger.trace "Getting entity from cache (ID: #{id})"
+        entities[id].tap do |entity|
+          logger.debug "Got entity: #{self.class.entity_log_msg(entity)} (ID: #{id})"
+        end
       end
 
       def put(id, entity)
-        items[id] = entity
+        entities[id] = entity
+      end
+
+      def self.entity_log_msg(entity)
+        if entity.nil?
+          return "(none)"
+        else
+          return entity.class.name
+        end
       end
 
       def self.logger

@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'cache_init'
 
 describe "Retrieve an Item from the Cache" do
   describe "When the Item is in the Cache" do

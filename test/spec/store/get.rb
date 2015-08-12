@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'store_init'
 
 describe "Get Entity from Store" do
   stream_name = EventStore::EntityStore::Controls::Writer.write 'someEntity'
