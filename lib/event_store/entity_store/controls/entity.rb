@@ -6,8 +6,12 @@ module EventStore
           EventStore::EntityProjection::Controls::Entity.example
         end
 
+        def self.entity_class
+          EventStore::EntityProjection::Controls::Entity::SomeEntity
+        end
+
         def self.new
-          EventStore::EntityProjection::Controls::Entity::SomeEntity.new
+          entity_class.new
         end
       end
     end

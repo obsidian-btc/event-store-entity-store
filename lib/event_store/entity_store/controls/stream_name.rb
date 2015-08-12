@@ -1,7 +1,11 @@
 module EventStore
   module EntityStore
     module Controls
-      StreamName = EventStore::EntityProjection::Controls::StreamName
+      module StreamName
+        def self.id(stream_name)
+          EventStore::Messaging::StreamName.get_id(stream_name)
+        end
+      end
     end
   end
 end
