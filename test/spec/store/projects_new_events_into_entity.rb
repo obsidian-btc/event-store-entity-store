@@ -20,8 +20,6 @@ describe "Projects New Events Into the Entity" do
 
     retrieved_entity = store.get id
 
-    logger(__FILE__).info retrieved_entity.inspect
-
     specify "some_attribute" do
       assert(entity.some_attribute == EventStore::EntityStore::Controls::Message.attribute)
     end
@@ -30,12 +28,4 @@ describe "Projects New Events Into the Entity" do
       assert(entity.some_time == EventStore::EntityStore::Controls::Message.time)
     end
   end
-
-
-
-  # cached_entity = store.cache.get id
-
-  # specify "Projected entity is cached" do
-  #   refute(cached_entity.nil?)
-  # end
 end
