@@ -5,6 +5,7 @@ module EventStore
         cls.extend EntityMacro
         cls.extend ProjectionMacro
         cls.extend Logger
+        cls.extend Configure
         cls.extend Build
 
         cls.send :include, EventStore::Messaging::StreamName
@@ -44,6 +45,14 @@ module EventStore
             Telemetry::Logger.configure instance
             logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
           end
+        end
+      end
+
+      module Configure
+        def configure(receiver)
+          instance = build
+          receiver.store = instance
+          instance
         end
       end
 
