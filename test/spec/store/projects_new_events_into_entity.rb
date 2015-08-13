@@ -1,6 +1,6 @@
 require_relative 'store_init'
 
-describe "Build Projection Starting at Last Cached Version" do
+describe "Projects New Events Into the Entity" do
   stream_name = EventStore::EntityStore::Controls::StreamName.get 'someEntity'
   store = EventStore::EntityStore::Controls::Store::SomeStore.build
   category_name = stream_name.split('-')[0]
@@ -15,9 +15,23 @@ describe "Build Projection Starting at Last Cached Version" do
 
   store.cache.put id, entity
 
-  retrieved_entity = store.get id
+  describe "Entity Attributes" do
+    EventStore::EntityStore::Controls::Writer.write_second stream_name
 
-  logger(__FILE__).info retrieved_entity.inspect
+    retrieved_entity = store.get id
+
+    logger(__FILE__).info retrieved_entity.inspect
+
+    specify "some_attribute" do
+      assert(entity.some_attribute == EventStore::EntityStore::Controls::Message.attribute)
+    end
+
+    specify "some_time" do
+      assert(entity.some_time == EventStore::EntityStore::Controls::Message.time)
+    end
+  end
+
+
 
   # cached_entity = store.cache.get id
 
