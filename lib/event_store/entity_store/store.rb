@@ -53,20 +53,23 @@ module EventStore
 
       def get(id)
         logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
-        entity = get_entity(id)
+
         stream_name = stream_name(id)
 
-        projection_class.! entity, stream_name
+        record = cache.get_record(id)
 
-        cache.put id, entity
+        entity = record.entity || new_entity
+        starting_position = (record.version || -1) + 1
+
+        version = projection_class.! entity, stream_name, starting_position: starting_position
+
+        version_CHANGE_TO_FOR_REAL_VALUE_WHEN_AVAILABLE = 0
+
+        cache.put id, entity, version_CHANGE_TO_FOR_REAL_VALUE_WHEN_AVAILABLE
 
         logger.debug "Got entity: #{Store.entity_log_msg(entity)} (ID: #{id})"
 
         entity
-      end
-
-      def get_entity(id)
-        new_entity
       end
 
       def self.entity_log_msg(entity)

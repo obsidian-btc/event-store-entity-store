@@ -1,14 +1,16 @@
 module EventStore
   module EntityStore
     class Cache
+      dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
-      def entities
-        @entities ||= {}
+      def records
+        @records ||= {}
       end
 
       def self.build
         new.tap do |instance|
+          Clock::UTC.configure instance
           Telemetry::Logger.configure instance
         end
       end
@@ -21,25 +23,51 @@ module EventStore
 
       def get(id)
         logger.trace "Getting entity from cache (ID: #{id})"
-        entities[id].tap do |entity|
-          logger.debug "Got entity: #{self.class.entity_log_msg(entity)} (ID: #{id})"
+
+        record = get_record(id)
+
+        entity = nil
+        unless record.nil?
+          entity = record.entity
+        end
+
+        logger.debug "Got entity: #{self.class.object_log_msg(entity)} (ID: #{id})"
+
+        entity
+      end
+
+      def put(id, entity, version=nil, time=nil)
+        version ||= 0
+        time ||= clock.iso8601
+        record = Record.new entity, version, time
+        records[id] = record
+        record
+      end
+
+      def get_record(id)
+        logger.trace "Getting record from cache (ID: #{id})"
+
+        records.fetch(id, Record.new).tap do |record|
+          logger.debug "Got record: #{self.class.object_log_msg(record)} (ID: #{id})"
         end
       end
 
-      def put(id, entity)
-        entities[id] = entity
-      end
-
-      def self.entity_log_msg(entity)
-        if entity.nil?
+      def self.object_log_msg(object)
+        if object.nil?
           return "(none)"
         else
-          return entity.class.name
+          return object.class.name
         end
       end
 
       def self.logger
         @logger ||= Telemetry::Logger.build
+      end
+
+      Record = Struct.new(:entity, :version, :time) do
+        def age
+          Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
+        end
       end
     end
   end

@@ -1,25 +1,27 @@
-# require_relative 'store_init'
+require_relative 'store_init'
 
-# describe "Cache Projection Results" do
-#           stream_name = Controls::StreamName.get stream_name
-#           path = "/streams/#{stream_name}"
+describe "Build Projection from Last Cached Version" do
+  stream_name = EventStore::EntityStore::Controls::StreamName.get 'someEntity'
+  store = EventStore::EntityStore::Controls::Store::SomeStore.build
+  category_name = stream_name.split('-')[0]
+  store.category_name = category_name
 
+  EventStore::EntityStore::Controls::Writer.write_first stream_name
 
+  entity = EventStore::EntityStore::Controls::Entity.example
+  EventStore::EntityStore::Controls::Projection::SomeProjection.! entity, stream_name
 
-#   stream_name = EventStore::EntityStore::Controls::Writer.write 'someEntity'
+  id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
 
-#   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
-#   category_name = stream_name.split('-')[0]
+  store.cache.put id, entity
 
-#   store = EventStore::EntityStore::Controls::Store::SomeStore.build
+  retrieved_entity = store.get id
 
-#   store.category_name = category_name
+  logger(__FILE__).info retrieved_entity.inspect
 
-#   store.get id
+  # cached_entity = store.cache.get id
 
-#   cached_entity = store.cache.get id
-
-#   specify "Projected entity is cached" do
-#     refute(cached_entity.nil?)
-#   end
-# end
+  # specify "Projected entity is cached" do
+  #   refute(cached_entity.nil?)
+  # end
+end
