@@ -63,11 +63,9 @@ module EventStore
 
         version = projection_class.! entity, stream_name, starting_position: starting_position
 
-        version_CHANGE_TO_FOR_REAL_VALUE_WHEN_AVAILABLE = 0
+        cache.put id, entity, version
 
-        cache.put id, entity, version_CHANGE_TO_FOR_REAL_VALUE_WHEN_AVAILABLE
-
-        logger.debug "Got entity: #{Store.entity_log_msg(entity)} (ID: #{id})"
+        logger.debug "Got entity: #{Store.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
 
         entity
       end

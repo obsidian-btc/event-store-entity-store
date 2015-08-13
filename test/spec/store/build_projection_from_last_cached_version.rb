@@ -1,6 +1,6 @@
 require_relative 'store_init'
 
-describe "Build Projection from Last Cached Version" do
+describe "Build Projection Starting at Last Cached Version" do
   stream_name = EventStore::EntityStore::Controls::StreamName.get 'someEntity'
   store = EventStore::EntityStore::Controls::Store::SomeStore.build
   category_name = stream_name.split('-')[0]
