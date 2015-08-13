@@ -7,7 +7,7 @@ module EventStore
         end
 
         class SomeStore
-          include EntityStore::Store
+          include EventStore::EntityStore
 
           category Controls::Store.category
           entity Controls::Entity.entity_class

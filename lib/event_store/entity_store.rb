@@ -6,4 +6,4 @@ require 'clock'
 require 'event_store/entity_projection'
 
 require 'event_store/entity_store/cache'
-require 'event_store/entity_store/store'
+require 'event_store/entity_store/entity_store'
