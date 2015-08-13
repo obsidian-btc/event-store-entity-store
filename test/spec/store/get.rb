@@ -1,7 +1,7 @@
-require_relative 'spec_init'
+require_relative 'store_init'
 
 describe "Get Entity from Store" do
-  stream_name = EventStore::EntityStore::Controls::Writer.write 'someEntity'
+  stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
   category_name = stream_name.split('-')[0]
