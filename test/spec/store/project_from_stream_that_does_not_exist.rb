@@ -13,4 +13,9 @@ describe "Projects Events Into the Entity from Stream that Doesn't Exist" do
   specify "Entity is nil" do
     assert(entity.nil?)
   end
+
+  specify "Entity is not cached" do
+    cache_record = store.cache.get(id)
+    assert(cache_record.nil?)
+  end
 end

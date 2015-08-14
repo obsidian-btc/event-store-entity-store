@@ -64,7 +64,7 @@ module EventStore
 
       stream_name = stream_name(id)
 
-      record = cache.get_record(id)
+      record = cache.get(id)
 
       entity = nil
       starting_position = nil
@@ -74,9 +74,6 @@ module EventStore
       else
         entity = new_entity
       end
-
-      # entity = record.entity || new_entity
-      # starting_position = (record.version || -1) + 1
 
       version = projection_class.! entity, stream_name, starting_position: starting_position
 
