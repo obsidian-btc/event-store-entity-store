@@ -8,7 +8,7 @@ describe "Projects New Events Into the Entity" do
 
   EventStore::EntityStore::Controls::Writer.write_first stream_name
 
-  entity = EventStore::EntityStore::Controls::Entity.example
+  entity = EventStore::EntityStore::Controls::Entity.new
   EventStore::EntityStore::Controls::Projection::SomeProjection.! entity, stream_name
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
