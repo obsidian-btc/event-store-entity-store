@@ -11,7 +11,7 @@ describe "Cache Record" do
 
   cache.put id, entity, version, time
 
-  record = cache.get_record(id)
+  record = cache.get(id)
 
   specify "Entity" do
     assert(record.entity == entity)

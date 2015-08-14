@@ -21,21 +21,6 @@ module EventStore
         instance
       end
 
-      def get(id)
-        logger.trace "Getting entity from cache (ID: #{id})"
-
-        record = get_record(id)
-
-        entity = nil
-        unless record.nil?
-          entity = record.entity
-        end
-
-        logger.debug "Got entity: #{self.class.object_log_msg(entity)} (ID: #{id})"
-
-        entity
-      end
-
       def put(id, entity, version=nil, time=nil)
         version ||= 0
         time ||= clock.iso8601
@@ -44,12 +29,18 @@ module EventStore
         record
       end
 
-      def get_record(id)
+      def get(id)
         logger.trace "Getting record from cache (ID: #{id})"
 
-        records.fetch(id, Record.new).tap do |record|
-          logger.debug "Got record: #{self.class.object_log_msg(record)} (ID: #{id})"
+        record = records[id]
+
+        unless record.nil?
+          logger.debug "Cache hit: #{self.class.object_log_msg(record)} (ID: #{id})"
+        else
+          logger.debug "Cache miss (ID: #{id})"
         end
+
+        record
       end
 
       def self.object_log_msg(object)

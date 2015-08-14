@@ -15,10 +15,10 @@ describe "Retrieve an Item from the Cache" do
     other_id = UUID::Random.get
     cache.put other_id, other_entity
 
-    retrieved_entity = cache.get(id)
+    cache_record = cache.get(id)
 
-    specify "Retrieves the entity" do
-      assert(retrieved_entity == entity)
+    specify "Retrieves the record" do
+      assert(cache_record.entity == entity)
     end
   end
 
@@ -27,10 +27,10 @@ describe "Retrieve an Item from the Cache" do
 
     some_id = UUID::Random.get
 
-    entity = cache.get(some_id)
+    record = cache.get(some_id)
 
-    specify "Entity is represented as nil" do
-      assert(entity.nil?)
+    specify "There is no record" do
+      assert(record.nil?)
     end
   end
 end
