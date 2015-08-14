@@ -66,16 +66,29 @@ module EventStore
 
       record = cache.get_record(id)
 
-      entity = record.entity || new_entity
-      starting_position = (record.version || -1) + 1
+      entity = nil
+      starting_position = nil
+      unless record.nil?
+        entity = record.entity
+        starting_position = record.version + 1
+      else
+        entity = new_entity
+      end
+
+      # entity = record.entity || new_entity
+      # starting_position = (record.version || -1) + 1
 
       version = projection_class.! entity, stream_name, starting_position: starting_position
 
-      cache.put id, entity, version
+      retrieved_entity = nil
+      unless version.nil?
+        retrieved_entity = entity
+        cache.put id, entity, version
+      end
 
       logger.debug "Got entity: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
 
-      entity
+      retrieved_entity
     end
 
     def self.entity_log_msg(entity)

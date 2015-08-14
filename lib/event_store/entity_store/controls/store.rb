@@ -17,6 +17,18 @@ module EventStore
         def self.example
           SomeStore.build
         end
+
+        module Anomaly
+          module StreamDoesntExist
+            class SomeStore
+              include EventStore::EntityStore
+
+              category 'doesntExist'
+              entity Controls::Entity.entity_class
+              projection Controls::Projection::SomeProjection
+            end
+          end
+        end
       end
     end
   end
