@@ -62,6 +62,7 @@ module EventStore
 
         def destructure(includes=nil)
           includes ||= []
+          includes = [includes] unless includes.is_a? Array
 
           response = []
           includes.each do |attribute|
