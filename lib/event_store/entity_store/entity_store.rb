@@ -59,8 +59,11 @@ module EventStore
       @category_name = val
     end
 
-    def get(id)
-      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
+    def get(id, include: nil, cache_only: nil)
+      include ||= []
+      cache_only ||= false
+
+      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Cache Only: #{cache_only})"
 
       stream_name = stream_name(id)
 
@@ -68,24 +71,27 @@ module EventStore
 
       entity = nil
       starting_position = nil
+
       unless record.nil?
         entity = record.entity
         starting_position = record.version + 1
-      else
-        entity = new_entity
       end
 
-      version = projection_class.! entity, stream_name, starting_position: starting_position
-
-      retrieved_entity = nil
-      unless version.nil?
-        retrieved_entity = entity
-        cache.put id, entity, version
+      version = nil
+      unless cache_only
+        entity ||= new_entity
+        version = projection_class.! entity, stream_name, starting_position: starting_position
       end
 
-      logger.debug "Got entity: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
+      cache.put id, entity, version
 
-      retrieved_entity
+      logger.debug "Got entity: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
+
+      entity
+    end
+
+    def update
+      raise NotImplementedError
     end
 
     def self.entity_log_msg(entity)

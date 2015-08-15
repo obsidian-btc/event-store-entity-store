@@ -1,16 +1,20 @@
-require_relative 'store_init'
+require_relative '../store_init'
 
 describe "Get Entity and ID from Store" do
-  stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
-
-  id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
-  category_name = stream_name.split('-')[0]
+  id = Controls::ID.get
 
   store = EventStore::EntityStore::Controls::Store::SomeStore.build
 
-  store.category_name = category_name
+  entity = EventStore::EntityStore::Controls::Entity.example
 
-  entity = store.get id
+  logger(__FILE__).info entity.inspect
+
+  store.cache.put id, entity
+  logger(__FILE__).info store.cache.inspect
+
+  entity = store.get id, include: :id, cache_only: true
+
+  logger(__FILE__).info entity.inspect
 
   describe "Entity Attributes" do
     specify "some_attribute" do
