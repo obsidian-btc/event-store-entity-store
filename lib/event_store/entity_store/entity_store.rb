@@ -65,33 +65,49 @@ module EventStore
 
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Cache Only: #{cache_only})"
 
-      stream_name = stream_name(id)
+      cache_record = cache.get(id)
 
-      record = cache.get(id)
+
+      logger.info "Cache Record: #{cache_record.inspect}"
+
+
+      # replace with cache query that destructures record
+      # test destructuring against cache
 
       entity = nil
       starting_position = nil
-
-      unless record.nil?
-        entity = record.entity
-        starting_position = record.version + 1
+      unless cache_record.nil?
+        entity = cache_record.entity
+        starting_position = cache_record.version + 1
       end
 
       version = nil
       unless cache_only
-        entity ||= new_entity
-        version = projection_class.! entity, stream_name, starting_position: starting_position
+        entity, version = update_entity(entity, id, starting_position)
       end
 
-      cache.put id, entity, version
+      logger.info "Entity: #{entity.inspect}"
 
-      logger.debug "Got entity: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
+      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
 
       entity
     end
 
-    def update
-      raise NotImplementedError
+    def update_entity(entity, id, starting_position)
+      stream_name = stream_name(id)
+
+      projection_entity = (entity ||= new_entity)
+
+      version = projection_class.! projection_entity, stream_name, starting_position: starting_position
+
+      if version
+        entity = projection_entity
+        cache.put id, entity, version
+      else
+        entity = nil
+      end
+
+      return entity, version
     end
 
     def self.entity_log_msg(entity)
