@@ -73,7 +73,11 @@ module EventStore
 
       logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
 
-      cache_record.entity
+      cache_record.destructure(includes)
+    end
+
+    def included(cache_record, includes)
+      includes = []
     end
 
     def update_entity(cache_record, id)
