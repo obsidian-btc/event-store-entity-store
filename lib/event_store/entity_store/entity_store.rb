@@ -71,19 +71,24 @@ module EventStore
 
       entity = nil
       starting_position = nil
-
       unless record.nil?
         entity = record.entity
         starting_position = record.version + 1
       end
 
+      # this is: update_entity(entity)
+      # - returns version
       version = nil
       unless cache_only
-        entity ||= new_entity
-        version = projection_class.! entity, stream_name, starting_position: starting_position
+        projected_entity = (entity || new_entity)
+        version = projection_class.! projected_entity, stream_name, starting_position: starting_position
+
+        if version
+          entity = projected_entity
+          cache.put id, entity, version
+        end
       end
 
-      cache.put id, entity, version
 
       logger.debug "Got entity: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
 

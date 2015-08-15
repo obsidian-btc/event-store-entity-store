@@ -7,22 +7,23 @@ describe "Get Entity and ID from Store" do
 
   entity = EventStore::EntityStore::Controls::Entity.example
 
-  logger(__FILE__).info entity.inspect
-
   store.cache.put id, entity
-  logger(__FILE__).info store.cache.inspect
 
-  entity = store.get id, include: :id, cache_only: true
+  describe "Returns" do
+    retrieved_entity, retrieved_id = store.get id, include: :id, cache_only: true
 
-  logger(__FILE__).info entity.inspect
+    # specify "ID" do
+    #   assert(retrieved_id == id)
+    # end
 
-  describe "Entity Attributes" do
-    specify "some_attribute" do
-      assert(entity.some_attribute == EventStore::EntityStore::Controls::Message.attribute)
-    end
+    describe "Entity" do
+      specify "some_attribute" do
+        assert(retrieved_entity.some_attribute == entity.some_attribute)
+      end
 
-    specify "some_time" do
-      assert(entity.some_time == EventStore::EntityStore::Controls::Message.time)
+      specify "some_time" do
+        assert(retrieved_entity.some_time == entity.some_time)
+      end
     end
   end
 end
