@@ -8,16 +8,14 @@ describe "Destructure Cache Record" do
     assert(entity == record.entity)
   end
 
-  # describe "Entity, Including" do
-  #   specify "ID" do
-  #     entity, id = record.destructure([:id])
-
-  #     assert(entity == record.entity)
-  #     assert(id == record.entity)
-  #   end
-  # end
-
   describe "Entity, Including" do
+    specify "ID" do
+      entity, id = record.destructure([:id])
+
+      assert(entity == record.entity)
+      assert(id == record.id)
+    end
+
     specify "Version" do
       entity, version = record.destructure([:version])
 
