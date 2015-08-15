@@ -67,13 +67,6 @@ module EventStore
 
       cache_record = cache.get(id)
 
-
-      logger.info "Cache Record: #{cache_record.inspect}"
-
-
-      # replace with cache query that destructures record
-      # test destructuring against cache
-
       entity = nil
       starting_position = nil
       unless cache_record.nil?
@@ -85,8 +78,6 @@ module EventStore
       unless cache_only
         entity, version = update_entity(entity, id, starting_position)
       end
-
-      logger.info "Entity: #{entity.inspect}"
 
       logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
 
