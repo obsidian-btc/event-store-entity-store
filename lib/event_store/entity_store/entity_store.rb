@@ -59,54 +59,45 @@ module EventStore
       @category_name = val
     end
 
-    def get(id, include: nil, cache_only: nil)
+    def get(id, include: nil)
       include ||= []
-      cache_only ||= false
 
-      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Cache Only: #{cache_only})"
+      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
 
       cache_record = cache.get(id)
 
-      entity = nil
-      starting_position = nil
-      unless cache_record.nil?
-        entity = cache_record.entity
-        starting_position = cache_record.version + 1
-      end
+      cache_record = update_entity(cache_record, id)
 
-      version = nil
-      unless cache_only
-        entity, version = update_entity(entity, id, starting_position)
-      end
+      entity = cache_record.entity
+      version = cache_record.version
 
-      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Cache Only: #{cache_only})"
+      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
 
-      entity
+      cache_record.entity
     end
 
-    def update_entity(entity, id, starting_position)
+    def update_entity(cache_record, id)
       stream_name = stream_name(id)
 
-      projection_entity = (entity ||= new_entity)
+      entity = nil
+      starting_position = nil
 
-      version = projection_class.! projection_entity, stream_name, starting_position: starting_position
+      if cache_record
+        entity = cache_record.entity
+        starting_position = cache_record.version + 1
+      else
+        entity = new_entity
+      end
+
+      version = projection_class.! entity, stream_name, starting_position: starting_position
 
       if version
-        entity = projection_entity
-        cache.put id, entity, version
+        cache_record = cache.put id, entity, version
       else
-        entity = nil
+        cache_record = Cache::Record.new
       end
 
-      return entity, version
-    end
-
-    def self.entity_log_msg(entity)
-      if entity.nil?
-        return "(none)"
-      else
-        return entity.class.name
-      end
+      cache_record
     end
 
     def new_entity
@@ -114,6 +105,14 @@ module EventStore
         return entity_class.build
       else
         return entity_class.new
+      end
+    end
+
+    def self.entity_log_msg(entity)
+      if entity.nil?
+        return "(none)"
+      else
+        return entity.class.name
       end
     end
   end

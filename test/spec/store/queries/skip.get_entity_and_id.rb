@@ -10,7 +10,7 @@ describe "Get Entity and ID from Store" do
   store.cache.put id, entity
 
   describe "Returns" do
-    retrieved_entity, retrieved_id = store.get id, include: :id, cache_only: true
+    retrieved_entity, retrieved_id = store.get id, include: :id
 
     # specify "ID" do
     #   assert(retrieved_id == id)
