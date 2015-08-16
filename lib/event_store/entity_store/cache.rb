@@ -24,7 +24,7 @@ module EventStore
       def put(id, entity, version=nil, time=nil)
         version ||= 0
         time ||= clock.iso8601
-        record = Record.new entity, version, time
+        record = Record.new entity, id, version, time
         records[id] = record
         record
       end
@@ -55,9 +55,25 @@ module EventStore
         @logger ||= Telemetry::Logger.build
       end
 
-      Record = Struct.new(:entity, :version, :time) do
+      Record = Struct.new(:entity, :id, :version, :time) do
         def age
           Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
+        end
+
+        def destructure(includes=nil)
+          includes ||= []
+          includes = [includes] unless includes.is_a? Array
+
+          response = []
+          includes.each do |attribute|
+            response << send(attribute)
+          end
+
+          if response.empty?
+            return entity
+          else
+            return response.unshift(entity)
+          end
         end
       end
     end

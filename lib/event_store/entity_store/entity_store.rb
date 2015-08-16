@@ -60,8 +60,6 @@ module EventStore
     end
 
     def get(id, include: nil)
-      include ||= []
-
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
 
       cache_record = cache.get(id)
@@ -73,7 +71,7 @@ module EventStore
 
       logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
 
-      cache_record.entity
+      cache_record.destructure(include)
     end
 
     def update_entity(cache_record, id)

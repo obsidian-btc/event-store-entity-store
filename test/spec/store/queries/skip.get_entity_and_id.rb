@@ -18,11 +18,11 @@ describe "Get Entity and ID from Store" do
 
     describe "Entity" do
       specify "some_attribute" do
-        assert(retrieved_entity.some_attribute == entity.some_attribute)
+        assert(retrieved_entity.some_attribute == EventStore::EntityStore::Controls::Message.attribute)
       end
 
       specify "some_time" do
-        assert(retrieved_entity.some_time == entity.some_time)
+        assert(retrieved_entity.some_time == EventStore::EntityStore::Controls::Message.time)
       end
     end
   end

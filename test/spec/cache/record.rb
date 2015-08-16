@@ -17,6 +17,10 @@ describe "Cache Record" do
     assert(record.entity == entity)
   end
 
+  specify "ID" do
+    assert(record.id == id)
+  end
+
   specify "Version" do
     assert(record.version == version)
   end
