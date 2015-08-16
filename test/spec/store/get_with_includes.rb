@@ -1,4 +1,4 @@
-require_relative '../store_init'
+require_relative './store_init'
 
 describe "Get, with Includes" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
