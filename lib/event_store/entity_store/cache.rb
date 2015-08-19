@@ -8,10 +8,19 @@ module EventStore
       abstract :reset
 
       def self.build
-        Lifecycle::Instance.new.tap do |instance|
+        scope = :instance
+        scope_class(scope).new.tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
         end
+      end
+
+      def self.scope_class(scope_name)
+        if scope_name == :instance
+          return Lifecycle::Instance
+        end
+
+        # raise if not in list
       end
 
       def self.configure(receiver)
