@@ -1,7 +1,7 @@
 require_relative '../cache_init'
 
 describe "Exclusive Cache Scope" do
-  specify "Unique lists of cache records" do
+  specify "List of cache records is exclusive to the cache instance" do
     cache_1 = EventStore::EntityStore::Cache::Scope::Exclusive.build
     cache_2 = EventStore::EntityStore::Cache::Scope::Exclusive.build
 
