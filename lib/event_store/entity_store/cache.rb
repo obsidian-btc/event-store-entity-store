@@ -4,12 +4,11 @@ module EventStore
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
-      def records
-        @records ||= {}
-      end
+      abstract :records
+      abstract :reset
 
       def self.build
-        new.tap do |instance|
+        Lifecycle::Instance.new.tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
         end
@@ -24,8 +23,14 @@ module EventStore
       def put(id, entity, version=nil, time=nil)
         version ||= 0
         time ||= clock.iso8601
+
+        logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
+
         record = Record.new entity, id, version, time
         records[id] = record
+
+        logger.debug "Put record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
+
         record
       end
 
@@ -64,16 +69,20 @@ module EventStore
           includes ||= []
           includes = [includes] unless includes.is_a? Array
 
-          response = []
+          responses = []
           includes.each do |attribute|
-            response << send(attribute)
+            responses << send(attribute)
           end
 
-          if response.empty?
+          if responses.empty?
             return entity
           else
-            return response.unshift(entity)
+            return responses.unshift(entity)
           end
+        end
+
+        def logger
+          @logger ||= Telemetry::Logger.get self
         end
       end
     end
