@@ -1,7 +1,7 @@
 module EventStore
   module EntityStore
     class Cache
-      module Lifecycle
+      module Scope
         class Instance < Cache
           def records
             @records ||= reset

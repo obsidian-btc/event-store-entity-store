@@ -17,7 +17,7 @@ module EventStore
 
       def self.scope_class(scope_name)
         if scope_name == :instance
-          return Lifecycle::Instance
+          return Scope::Instance
         end
 
         # raise if not in list
