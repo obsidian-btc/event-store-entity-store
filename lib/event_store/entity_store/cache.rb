@@ -8,7 +8,7 @@ module EventStore
       abstract :reset
 
       def self.build
-        scope = :instance
+        scope = :exclusive
         scope_class(scope).new.tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
@@ -16,8 +16,8 @@ module EventStore
       end
 
       def self.scope_class(scope_name)
-        if scope_name == :instance
-          return Scope::Instance
+        if scope_name == :exclusive
+          return Scope::Exclusive
         end
 
         # raise if not in list

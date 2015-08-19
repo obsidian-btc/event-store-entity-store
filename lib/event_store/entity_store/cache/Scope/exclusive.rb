@@ -2,7 +2,7 @@ module EventStore
   module EntityStore
     class Cache
       module Scope
-        class Instance < Cache
+        class Exclusive < Cache
           def records
             @records ||= reset
           end
