@@ -13,13 +13,6 @@ module EventStore
         @subject = subject
       end
 
-      def self.build(subject)
-        new(subject).tap do |instance|
-          Clock::UTC.configure instance
-          Telemetry::Logger.configure instance
-        end
-      end
-
       def self.configure(receiver, subject, scope: nil)
         instance = Factory.build_cache(subject, scope: scope)
         receiver.cache = instance
@@ -59,6 +52,14 @@ module EventStore
           return "(none)"
         else
           return object.class.name
+        end
+      end
+
+      protected
+      def self.build(subject)
+        new(subject).tap do |instance|
+          Clock::UTC.configure instance
+          Telemetry::Logger.configure instance
         end
       end
     end
