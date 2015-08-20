@@ -1,4 +1,4 @@
-require_relative 'cache_init'
+require_relative '../cache_init'
 
 describe "Retrieve an Item from the Cache" do
   describe "When the Item is in the Cache" do
@@ -7,7 +7,7 @@ describe "Retrieve an Item from the Cache" do
     other_entity = EventStore::EntityStore::Controls::Entity.example
     other_entity.some_attribute = 'something'
 
-    cache = EventStore::EntityStore::Cache.build
+    cache = EventStore::EntityStore::Cache::Scope::Shared.build entity.class
 
     id = UUID::Random.get
     cache.put id, entity
@@ -23,7 +23,9 @@ describe "Retrieve an Item from the Cache" do
   end
 
   describe "When the Item is Not in the Cache" do
-    cache = EventStore::EntityStore::Cache.build
+    entity_class = EventStore::EntityStore::Controls::Entity.entity_class
+
+    cache = EventStore::EntityStore::Cache::Scope::Shared.build entity_class
 
     some_id = UUID::Random.get
 

@@ -37,10 +37,10 @@ module EventStore
     end
 
     module Build
-      def build
+      def build(cache_scope: nil)
         logger.trace "Building entity store"
         new.tap do |instance|
-          EntityStore::Cache.configure instance
+          EntityStore::Cache.configure instance, instance.entity_class, scope: cache_scope
           Telemetry::Logger.configure instance
           logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
         end

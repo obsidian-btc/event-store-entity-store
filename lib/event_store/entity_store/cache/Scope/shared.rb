@@ -4,11 +4,19 @@ module EventStore
       module Scope
         class Shared < Cache
           def records
-            @records ||= reset
+            self.class.records(subject)
           end
 
           def reset
-            @records = {}
+            self.class.records_registry[subject] = {}
+          end
+
+          def self.records(subject)
+            records_registry[subject] ||= {}
+          end
+
+          def self.records_registry
+            @records_registry ||= {}
           end
         end
       end

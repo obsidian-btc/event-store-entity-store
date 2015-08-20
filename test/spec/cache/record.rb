@@ -1,7 +1,7 @@
 require_relative 'cache_init'
 
 describe "Cache Record" do
-  cache = EventStore::EntityStore::Cache.build
+  cache = EventStore::EntityStore::Cache::Scope::Exclusive.build :some_subject
 
   id = UUID::Random.get
   version = 11

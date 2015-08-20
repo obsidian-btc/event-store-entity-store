@@ -1,42 +1,27 @@
 module EventStore
   module EntityStore
     class Cache
+      attr_reader :subject
+
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
       abstract :records
       abstract :reset
 
-      def self.scopes
-        @scopes ||= {
-          exclusive: Scope::Exclusive,
-          shared: Scope::Shared
-        }
+      def initialize(subject)
+        @subject = subject
       end
 
-      def self.build(scope: nil)
-        scope ||= Scope::Defaults::Name.get
-
-        scope_class(scope).new.tap do |instance|
+      def self.build(subject)
+        new(subject).tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
         end
       end
 
-      def self.scope_class(scope_name)
-        scope_class = scopes[scope_name]
-
-        unless scope_class
-          error_msg = "Scope \"#{scope_name}\" is unknown. It must be one of: #{scopes.keys.join(', ')}."
-          logger.error error_msg
-          raise Scope::Error, error_msg
-        end
-
-        scope_class
-      end
-
-      def self.configure(receiver)
-        instance = build
+      def self.configure(receiver, subject, scope: nil)
+        instance = Factory.build_cache(subject, scope: scope)
         receiver.cache = instance
         instance
       end
@@ -75,10 +60,6 @@ module EventStore
         else
           return object.class.name
         end
-      end
-
-      def self.logger
-        @logger ||= Telemetry::Logger.build self
       end
     end
   end

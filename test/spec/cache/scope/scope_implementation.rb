@@ -2,25 +2,26 @@ require_relative '../cache_init'
 
 describe "Select Cache Scope Implementation" do
   specify "Exclusive" do
-    cache = EventStore::EntityStore::Cache.build scope: :exclusive
+    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: :exclusive
     assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Exclusive)
   end
 
   specify "Shared" do
-    cache = EventStore::EntityStore::Cache.build scope: :shared
+    # cache = EventStore::EntityStore::Cache.build scope: :shared
+    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: :shared
     assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Shared)
   end
 
   specify "Error if unknown" do
     assert_raises(EventStore::EntityStore::Cache::Scope::Error) do
-      EventStore::EntityStore::Cache.build scope: UUID.random
+      EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: UUID.random
     end
   end
 end
 
 describe "Default Cache Scope Implementation" do
   specify "Exclusive" do
-    cache = EventStore::EntityStore::Cache.build
+    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
     assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Exclusive)
   end
 
@@ -29,7 +30,7 @@ describe "Default Cache Scope Implementation" do
 
     ENV[EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_name] = 'shared'
 
-    cache = EventStore::EntityStore::Cache.build
+    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
     assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Shared)
 
     ENV[EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_name] = saved_cache_setting
