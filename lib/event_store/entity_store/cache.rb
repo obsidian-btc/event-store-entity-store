@@ -1,14 +1,25 @@
 module EventStore
   module EntityStore
     class Cache
+      module Scope
+        class Error < StandardError; end
+      end
+
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
       abstract :records
       abstract :reset
 
-      def self.build
-        scope = :exclusive
+      def self.scopes
+        @scopes ||= {
+          exclusive: Scope::Exclusive,
+          shared: Scope::Shared
+        }
+      end
+
+      def self.build(scope: nil)
+        scope ||= :exclusive
         scope_class(scope).new.tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
@@ -16,11 +27,15 @@ module EventStore
       end
 
       def self.scope_class(scope_name)
-        if scope_name == :exclusive
-          return Scope::Exclusive
+        scope_class = scopes[scope_name]
+
+        unless scope_class
+          error_msg = "Scope \"#{scope_name}\" is unknown. It must be one of: #{scopes.keys.join(', ')}."
+          logger.error error_msg
+          raise Scope::Error, error_msg
         end
 
-        # raise if not in list
+        scope_class
       end
 
       def self.configure(receiver)
@@ -66,7 +81,7 @@ module EventStore
       end
 
       def self.logger
-        @logger ||= Telemetry::Logger.build
+        @logger ||= Telemetry::Logger.build self
       end
 
       Record = Struct.new(:entity, :id, :version, :time) do

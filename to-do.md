@@ -1,5 +1,8 @@
 # To Do
 
+0. Noop implementation
+  - always reads projection
+
 1. Cache implementations
   - Instance
   - Singleton
