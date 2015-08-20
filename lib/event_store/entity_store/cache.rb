@@ -1,22 +1,27 @@
 module EventStore
   module EntityStore
     class Cache
+      attr_reader :subject
+
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
-      def records
-        @records ||= {}
+      abstract :records
+      abstract :reset
+
+      def initialize(subject)
+        @subject = subject
       end
 
-      def self.build
-        new.tap do |instance|
+      def self.build(subject)
+        new(subject).tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
         end
       end
 
-      def self.configure(receiver)
-        instance = build
+      def self.configure(receiver, subject, scope: nil)
+        instance = Factory.build_cache(subject, scope: scope)
         receiver.cache = instance
         instance
       end
@@ -24,8 +29,14 @@ module EventStore
       def put(id, entity, version=nil, time=nil)
         version ||= 0
         time ||= clock.iso8601
-        record = Record.new entity, id, version, time
+
+        logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
+
+        record = Record.new(entity, id, version, time)
         records[id] = record
+
+        logger.debug "Put record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
+
         record
       end
 
@@ -48,32 +59,6 @@ module EventStore
           return "(none)"
         else
           return object.class.name
-        end
-      end
-
-      def self.logger
-        @logger ||= Telemetry::Logger.build
-      end
-
-      Record = Struct.new(:entity, :id, :version, :time) do
-        def age
-          Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
-        end
-
-        def destructure(includes=nil)
-          includes ||= []
-          includes = [includes] unless includes.is_a? Array
-
-          response = []
-          includes.each do |attribute|
-            response << send(attribute)
-          end
-
-          if response.empty?
-            return entity
-          else
-            return response.unshift(entity)
-          end
         end
       end
     end
