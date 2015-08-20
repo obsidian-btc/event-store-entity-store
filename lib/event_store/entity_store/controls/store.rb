@@ -14,8 +14,8 @@ module EventStore
           projection Controls::Projection::SomeProjection
         end
 
-        def self.example
-          SomeStore.build
+        def self.example(cache_scope: nil)
+          SomeStore.build(cache_scope: cache_scope)
         end
 
         module Anomaly

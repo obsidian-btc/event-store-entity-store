@@ -7,7 +7,6 @@ describe "Select Cache Scope Implementation" do
   end
 
   specify "Shared" do
-    # cache = EventStore::EntityStore::Cache.build scope: :shared
     cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: :shared
     assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Shared)
   end
