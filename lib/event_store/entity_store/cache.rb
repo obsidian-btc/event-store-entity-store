@@ -47,7 +47,7 @@ module EventStore
 
         logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
 
-        record = Record.new entity, id, version, time
+        record = Record.new(entity, id, version, time)
         records[id] = record
 
         logger.debug "Put record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
