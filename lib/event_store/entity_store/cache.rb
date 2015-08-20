@@ -1,10 +1,6 @@
 module EventStore
   module EntityStore
     class Cache
-      module Scope
-        class Error < StandardError; end
-      end
-
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
@@ -19,7 +15,8 @@ module EventStore
       end
 
       def self.build(scope: nil)
-        scope ||= :exclusive
+        scope ||= Scope::Defaults::Name.get
+
         scope_class(scope).new.tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
