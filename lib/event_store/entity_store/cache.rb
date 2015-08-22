@@ -26,17 +26,21 @@ module EventStore
         logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
 
         record = Record.new(entity, id, version, time)
-        records[id] = record
+        put_record(id, record)
 
         logger.debug "Put record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
 
         record
       end
 
+      def put_record(id, record)
+        records[id] = record
+      end
+
       def get(id)
         logger.trace "Getting record from cache (ID: #{id})"
 
-        record = records[id]
+        record = get_record(id)
 
         unless record.nil?
           logger.debug "Cache hit: #{self.class.object_log_msg(record)} (ID: #{id})"
@@ -45,6 +49,10 @@ module EventStore
         end
 
         record
+      end
+
+      def get_record(id)
+        records[id]
       end
 
       def self.object_log_msg(object)
@@ -60,8 +68,11 @@ module EventStore
         new(subject).tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
+          instance.configure_dependencies
         end
       end
+
+      virtual :configure_dependencies
     end
   end
 end
