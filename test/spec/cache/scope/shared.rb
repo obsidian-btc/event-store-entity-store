@@ -8,7 +8,7 @@ describe "Shared Cache Scope" do
     assert(cache_1.records.object_id == cache_2.records.object_id)
   end
 
-  specify "Records for caches for different subjects are shared" do
+  specify "Records for caches for different subjects are not shared" do
     cache_1 = EventStore::EntityStore::Cache::Scope::Shared.build :some_subject
     cache_2 = EventStore::EntityStore::Cache::Scope::Shared.build :some_other_subject
 
