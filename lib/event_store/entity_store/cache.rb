@@ -7,7 +7,6 @@ module EventStore
       dependency :logger, Telemetry::Logger
 
       abstract :records
-      abstract :reset
 
       def initialize(subject)
         @subject = subject

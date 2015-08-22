@@ -4,11 +4,7 @@ module EventStore
       module Scope
         class Exclusive < Cache
           def records
-            @records ||= reset
-          end
-
-          def reset
-            @records = {}
+            @records ||= {}
           end
         end
       end

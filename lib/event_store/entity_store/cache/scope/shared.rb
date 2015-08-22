@@ -7,10 +7,6 @@ module EventStore
             self.class.records(subject)
           end
 
-          def reset
-            self.class.records_registry[subject] = {}
-          end
-
           def self.records(subject)
             records_registry[subject] ||= {}
           end
