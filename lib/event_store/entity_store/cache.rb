@@ -6,8 +6,6 @@ module EventStore
       dependency :clock, Clock::UTC
       dependency :logger, Telemetry::Logger
 
-      # abstract :records
-
       def initialize(subject)
         @subject = subject
       end
