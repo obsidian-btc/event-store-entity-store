@@ -1,6 +1,8 @@
 module EventStore
   module EntityStore
     class Cache
+      class InvalidSubjectError < StandardError; end
+
       attr_reader :subject
 
       dependency :clock, Clock::UTC
@@ -60,12 +62,28 @@ module EventStore
         end
       end
 
+      def self.logger
+        @logger ||= Telemetry::Logger.build self
+      end
+
       protected
       def self.build(subject)
+        validate_subject(subject)
+
         new(subject).tap do |instance|
           Clock::UTC.configure instance
           Telemetry::Logger.configure instance
           instance.configure_dependencies
+        end
+      end
+
+      def self.validate_subject(subject)
+        raise InvalidSubjectError unless valid_subject?(subject)
+      end
+
+      class << self
+        virtual :valid_subject? do |subject|
+          true
         end
       end
 

@@ -5,10 +5,7 @@ module EventStore
         def self.build_cache(subject, scope: nil)
           scope ||= Scope::Defaults::Name.get
 
-          scope_class(scope).new(subject).tap do |instance|
-            Clock::UTC.configure instance
-            Telemetry::Logger.configure instance
-          end
+          scope_class(scope).build(subject)
         end
 
         def self.scope_class(scope_name)
