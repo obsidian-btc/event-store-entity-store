@@ -24,6 +24,8 @@ module EventStore
 
         logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
 
+        self.class.validate_writable(entity.class)
+
         record = Record.new(entity, id, version, time)
         put_record(id, record)
 
@@ -38,6 +40,8 @@ module EventStore
 
       def get(id)
         logger.trace "Getting record from cache (ID: #{id})"
+
+        self.class.validate_readable(subject)
 
         record = get_record(id)
 
@@ -78,11 +82,24 @@ module EventStore
       end
 
       def self.validate_subject(subject)
-        raise InvalidSubjectError unless valid_subject?(subject)
+        validate_readable(subject)
+        validate_writable(subject)
+      end
+
+      def self.validate_readable(subject)
+        raise InvalidSubjectError unless readable?(subject)
+      end
+
+      def self.validate_writable(subject)
+        raise InvalidSubjectError unless writable?(subject)
       end
 
       class << self
-        virtual :valid_subject? do |subject|
+        virtual :readable? do |subject|
+          true
+        end
+
+        virtual :writable? do |subject|
           true
         end
       end
