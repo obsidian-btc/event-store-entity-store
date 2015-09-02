@@ -64,6 +64,7 @@ module EventStore
 
       cache_record = cache.get(id)
 
+      # This is where refresh strategy will be applied
       cache_record = update_entity(cache_record, id)
 
       entity = cache_record.entity
@@ -74,6 +75,7 @@ module EventStore
       cache_record.destructure(include)
     end
 
+    # This is where refresh strategy will be applied
     def update_entity(cache_record, id)
       stream_name = stream_name(id)
 
@@ -89,7 +91,9 @@ module EventStore
 
       version = projection_class.! entity, stream_name, starting_position: starting_position
 
-      if version
+      got_entity = !!version
+
+      if got_entity
         cache_record = cache.put id, entity, version
       else
         cache_record = Cache::Record.new
