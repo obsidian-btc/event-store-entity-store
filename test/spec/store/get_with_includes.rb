@@ -14,12 +14,28 @@ describe "Get, with Includes" do
     refute(retrieved_entity.nil?)
   end
 
-  specify "Single Include" do
+  specify "ID" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
-    _, retrieved_id = store.get id, include: :id
-    refute(retrieved_id.nil?)
+    _, id = store.get id, include: :id
+    refute(id.nil?)
+  end
+
+  specify "Version" do
+    store = EventStore::EntityStore::Controls::Store::SomeStore.build
+    store.category_name = category_name
+
+    _, version = store.get id, include: :version
+    refute(version.nil?)
+  end
+
+  specify "Time" do
+    store = EventStore::EntityStore::Controls::Store::SomeStore.build
+    store.category_name = category_name
+
+    _, time = store.get id, include: :time
+    refute(time.nil?)
   end
 
   specify "Two Includes" do
