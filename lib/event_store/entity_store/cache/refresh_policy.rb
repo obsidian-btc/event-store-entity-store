@@ -2,7 +2,7 @@ module EventStore
   module EntityStore
     class Cache
       module RefreshPolicy
-        def self.!
+        def self.!(*)
           raise Virtual::PureMethodError, '"!"'
         end
 

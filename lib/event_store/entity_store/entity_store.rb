@@ -62,60 +62,30 @@ module EventStore
     end
 
     def get(id, include: nil, refresh: nil)
-      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
+      logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Include: #{include})"
 
-      cache_record = refresh_record(id)
+      cache_record = refresh_record(id, refresh)
 
       entity = cache_record.entity
       version = cache_record.version
 
-      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version})"
+      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Include: #{include})"
 
       cache_record.destructure(include)
     end
 
-    def refresh_record(id)
-      cache_record = cache.get(id)
+    def refresh_record(id, policy_name=nil)
+      if policy_name.nil?
+        refresh_policy = refresh
+      else
+        refresh_policy = EntityStore::Cache::RefreshPolicy.policy_class(policy_name)
+      end
 
+      cache_record = cache.get(id)
       stream_name = stream_name(id)
 
-      refresh.! id, cache, projection_class, stream_name, entity_class
+      refresh_policy.! id, cache, projection_class, stream_name, entity_class
     end
-
-    # TODO Remove once cache refresh policies are implemented [Scott, Thu Sep 03 2015]
-    # def refresh_record(cache_record, id)
-    #   stream_name = stream_name(id)
-
-    #   entity = nil
-    #   starting_position = nil
-
-    #   if cache_record
-    #     entity = cache_record.entity
-    #     starting_position = cache_record.version + 1
-    #   else
-    #     entity = new_entity
-    #   end
-
-    #   version = projection_class.! entity, stream_name, starting_position: starting_position
-
-    #   got_entity = !!version
-
-    #   if got_entity
-    #     cache_record = cache.put id, entity, version
-    #   else
-    #     cache_record = Cache::Record.new
-    #   end
-
-    #   cache_record
-    # end
-
-    # def new_entity
-    #   if entity_class.respond_to? :build
-    #     return entity_class.build
-    #   else
-    #     return entity_class.new
-    #   end
-    # end
 
     def self.entity_log_msg(entity)
       if entity.nil?
