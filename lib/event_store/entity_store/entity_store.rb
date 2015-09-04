@@ -62,9 +62,7 @@ module EventStore
     def get(id, include: nil)
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
 
-      cache_record = cache.get(id)
-
-      cache_record = update_entity(cache_record, id)
+      cache_record = refresh_record(id)
 
       entity = cache_record.entity
       version = cache_record.version
@@ -74,7 +72,9 @@ module EventStore
       cache_record.destructure(include)
     end
 
-    def update_entity(cache_record, id)
+    def refresh_record(id)
+      cache_record = cache.get(id)
+
       stream_name = stream_name(id)
 
       refresh = EventStore::EntityStore::Cache::RefreshPolicy::Immediate
@@ -82,7 +82,7 @@ module EventStore
     end
 
     # TODO Remove once cache refresh policies are implemented [Scott, Thu Sep 03 2015]
-    # def update_entity(cache_record, id)
+    # def refresh_record(cache_record, id)
     #   stream_name = stream_name(id)
 
     #   entity = nil
