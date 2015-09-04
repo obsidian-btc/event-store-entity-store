@@ -3,8 +3,6 @@ module EventStore
     class Cache
       module RefreshPolicy
         module Immediate
-          include EventStore::Messaging::StreamName
-
           def self.!(id, cache, projection_class, stream_name, entity_class)
             cache_record = cache.get(id)
 

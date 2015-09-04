@@ -9,6 +9,7 @@ module EventStore
 
       cls.send :include, EventStore::Messaging::StreamName
       cls.send :dependency, :cache, EntityStore::Cache
+      cls.send :dependency, :refresh, EntityStore::Cache::RefreshPolicy
       cls.send :dependency, :logger, Telemetry::Logger
     end
 
@@ -37,10 +38,11 @@ module EventStore
     end
 
     module Build
-      def build(cache_scope: nil)
+      def build(cache_scope: nil, refresh: nil)
         logger.trace "Building entity store"
         new.tap do |instance|
           EntityStore::Cache.configure instance, instance.entity_class, scope: cache_scope
+          EntityStore::Cache::RefreshPolicy.configure instance, refresh
           Telemetry::Logger.configure instance
           logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
         end
@@ -59,7 +61,7 @@ module EventStore
       @category_name = val
     end
 
-    def get(id, include: nil)
+    def get(id, include: nil, refresh: nil)
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id})"
 
       cache_record = refresh_record(id)
@@ -77,7 +79,6 @@ module EventStore
 
       stream_name = stream_name(id)
 
-      refresh = EventStore::EntityStore::Cache::RefreshPolicy::Immediate
       refresh.! id, cache, projection_class, stream_name, entity_class
     end
 
