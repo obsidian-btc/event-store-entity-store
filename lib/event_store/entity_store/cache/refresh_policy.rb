@@ -2,6 +2,8 @@ module EventStore
   module EntityStore
     class Cache
       module RefreshPolicy
+        class Error < StandardError; end
+
         def self.!(*)
           raise Virtual::PureMethodError, '"!"'
         end
@@ -12,13 +14,30 @@ module EventStore
           policy_class
         end
 
-        def self.policy_class(policy_name)
+        def self.policy_class(policy_name=nil)
           policy_name ||= Defaults::Name.get
-          send policy_name
+
+          policy_class = policies[policy_name]
+
+          unless policy_class
+            error_msg = "Refresh policy \"#{policy_name}\" is unknown. It must be one of: immediate, none, or age."
+            logger.error error_msg
+            raise Error, error_msg
+          end
+
+          policy_class
         end
 
-        def self.immediate
-          Immediate
+        def self.policies
+          @policies ||= {
+            immediate: Immediate,
+            none: None,
+            age: Age
+          }
+        end
+
+        def self.logger
+          @logger ||= Telemetry::Logger.build self
         end
 
         module Defaults
