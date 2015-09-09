@@ -13,7 +13,7 @@ describe "Select Cache Scope Implementation" do
 
   specify "Error if unknown" do
     assert_raises(EventStore::EntityStore::Cache::Scope::Error) do
-      EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: UUID.random
+      EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: SecureRandom.random_bytes
     end
   end
 end

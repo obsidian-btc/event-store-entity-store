@@ -20,7 +20,7 @@ end
 describe "Unknown" do
   specify "Error" do
     assert_raises(EventStore::EntityStore::Cache::RefreshPolicy::Error) do
-      EventStore::EntityStore::Cache::RefreshPolicy.policy_class(UUID::Random.get)
+      EventStore::EntityStore::Cache::RefreshPolicy.policy_class(SecureRandom.random_bytes)
     end
   end
 end

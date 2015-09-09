@@ -13,7 +13,7 @@ describe "Store's Cache Scope" do
 
   specify "Error if unknown" do
     assert_raises(EventStore::EntityStore::Cache::Scope::Error) do
-      EventStore::EntityStore::Controls::Store.example cache_scope: UUID.random
+      EventStore::EntityStore::Controls::Store.example cache_scope: SecureRandom.random_bytes
     end
   end
 end
