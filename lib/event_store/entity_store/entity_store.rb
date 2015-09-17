@@ -81,10 +81,16 @@ module EventStore
         refresh_policy = EntityStore::Cache::RefreshPolicy.policy_class(policy_name)
       end
 
+      logger.trace "Refreshing cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
+
       cache_record = cache.get(id)
       stream_name = stream_name(id)
 
-      refresh_policy.! id, cache, projection_class, stream_name, entity_class
+      record = refresh_policy.! id, cache, projection_class, stream_name, entity_class
+
+      logger.debug "Refreshed cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
+
+      record
     end
 
     def self.entity_log_msg(entity)

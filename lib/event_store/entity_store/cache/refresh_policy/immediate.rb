@@ -4,6 +4,8 @@ module EventStore
       module RefreshPolicy
         module Immediate
           def self.!(id, cache, projection_class, stream_name, entity_class)
+            logger.trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+
             cache_record = cache.get(id)
 
             entity = nil
@@ -25,6 +27,8 @@ module EventStore
               new_cache_record = Cache::Record.new
             end
 
+            logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+
             new_cache_record
           end
 
@@ -34,6 +38,10 @@ module EventStore
             else
               return entity_class.new
             end
+          end
+
+          def self.logger
+            @logger ||= Telemetry::Logger.get self
           end
         end
       end
