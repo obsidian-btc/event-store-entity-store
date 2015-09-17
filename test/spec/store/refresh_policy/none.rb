@@ -14,10 +14,8 @@ describe "Immediate Cache Refresh Policy" do
 
     refresh.! id, cache, projection_class, stream_name, entity.class
 
-    record = cache.get id
-    entity = record.entity
-
     describe "Doesn't update the entity" do
+      record = cache.get id
       entity = record.entity
 
       specify "some_attribute is not projected" do
@@ -36,10 +34,9 @@ describe "Immediate Cache Refresh Policy" do
     refresh.! id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity
 
     record = cache.get id
-    entity = record.entity
 
-    specify "Caches the entity" do
-      refute(entity.nil?)
+    specify "Doesn't cache the entity" do
+      assert(record.nil?)
     end
   end
 end
