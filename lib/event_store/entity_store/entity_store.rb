@@ -120,5 +120,21 @@ module EventStore
         "(none)"
       end
     end
+
+    module Substitute
+      def self.build
+        Store.new
+      end
+
+      class Store
+        def items
+          @items ||= {}
+        end
+
+        def get(id)
+          items[id]
+        end
+      end
+    end
   end
 end
