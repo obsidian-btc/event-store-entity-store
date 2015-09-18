@@ -1,4 +1,4 @@
-require_relative './store_init'
+require_relative '../store_init'
 
 describe "Get Entity Using the None Refresh Policy" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
