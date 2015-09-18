@@ -66,12 +66,19 @@ module EventStore
 
       cache_record = refresh_record(id, refresh)
 
-      entity = cache_record.entity
-      version = cache_record.version
+      entity, version = nil
+      unless cache_record.nil?
+        entity = cache_record.entity
+        version = cache_record.version
+      end
 
-      logger.debug "Get entity done: #{EntityStore.entity_log_msg(entity)} (ID: #{id}, Version: #{version}, Include: #{include})"
+      logger.debug "Get entity done: #{EntityStore::LogText.entity(entity)} (ID: #{id}, Version: #{EntityStore::LogText.version(version)}, Include: #{include})"
 
-      cache_record.destructure(include)
+      if cache_record
+        return cache_record.destructure(include)
+      else
+        return nil
+      end
     end
 
     def refresh_record(id, policy_name=nil)
@@ -83,21 +90,34 @@ module EventStore
 
       logger.trace "Refreshing cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
 
-      cache_record = cache.get(id)
       stream_name = stream_name(id)
 
-      record = refresh_policy.! id, cache, projection_class, stream_name, entity_class
+      cache_record = refresh_policy.! id, cache, projection_class, stream_name, entity_class
 
       logger.debug "Refreshed cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
 
-      record
+      cache_record
     end
 
-    def self.entity_log_msg(entity)
-      if entity.nil?
-        return "(none)"
-      else
-        return entity.class.name
+    module LogText
+      def self.entity(entity)
+        if entity.nil?
+          return none
+        else
+          return entity.class.name
+        end
+      end
+
+      def self.version(version)
+        if version.nil?
+          return none
+        else
+          return version
+        end
+      end
+
+      def self.none
+        "(none)"
       end
     end
   end

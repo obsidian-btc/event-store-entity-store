@@ -4,6 +4,7 @@ module EventStore
       module RefreshPolicy
         module None
           def self.!(id, cache, projection_class, stream_name, entity_class)
+            cache.get id
           end
         end
       end
