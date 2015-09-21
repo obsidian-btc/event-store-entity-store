@@ -131,6 +131,10 @@ module EventStore
           @items ||= {}
         end
 
+        def merge(items)
+          self.items.merge! items
+        end
+
         def get(id)
           items[id]
         end
