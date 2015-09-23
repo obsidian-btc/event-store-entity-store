@@ -1,13 +1,9 @@
 require_relative '../store_init'
 
 describe "Get Entity Using the None Refresh Policy" do
-  stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
-
   store = EventStore::EntityStore::Controls::Store::SomeStore.build refresh: :none
-  category_name = stream_name.split('-')[0]
-  store.category_name = category_name
 
-  id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
+  id = ::Controls::ID.get
 
   cache = store.cache
 
