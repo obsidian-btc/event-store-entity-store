@@ -17,6 +17,8 @@ prox_gem 'event_store_client_http'
 prox_gem 'event_store_messaging'
 prox_gem 'controls'
 prox_gem 'event_store_entity_projection'
+prox_gem 'http_protocol'
+prox_gem 'connection'
 
 source 'https://rubygems.org'
 
