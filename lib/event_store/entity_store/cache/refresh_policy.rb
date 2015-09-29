@@ -32,6 +32,7 @@ module EventStore
           @policies ||= {
             immediate: Immediate,
             none: None,
+            missing: Missing,
             age: Age
           }
         end
