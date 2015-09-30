@@ -28,10 +28,10 @@ module EventStore
 
             version = projection_class.! entity, stream_name
 
-            got_entity = !!version
+            projected = !!version
 
             cache_record = nil
-            if got_entity
+            if projected
               cache_record = cache.put id, entity, version
             end
 
