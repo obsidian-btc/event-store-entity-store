@@ -11,6 +11,11 @@ describe "Select Refresh Policy Implementation" do
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::None)
   end
 
+  specify "Missing" do
+    policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class(:missing)
+    assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::Missing)
+  end
+
   specify "Age" do
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class(:age)
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::Age)
