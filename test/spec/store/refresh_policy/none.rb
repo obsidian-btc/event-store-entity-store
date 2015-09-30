@@ -1,6 +1,6 @@
 require_relative '../store_init'
 
-describe "Immediate Cache Refresh Policy" do
+describe "None Cache Refresh Policy" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
   projection_class = EventStore::EntityStore::Controls::Projection::SomeProjection

@@ -28,6 +28,7 @@ module EventStore
             end
 
             logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.data "Cache Record: #{new_cache_record.inspect}"
 
             new_cache_record
           end
