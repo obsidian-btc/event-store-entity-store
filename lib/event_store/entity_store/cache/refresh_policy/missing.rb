@@ -8,10 +8,9 @@ module EventStore
 
             cache_record = cache.get(id)
 
-
-
             unless cache_record
-              cache_record = update_cache(id, cache, projection_class, stream_name, entity_class)
+              entity = new_entity(entity_class)
+              cache_record = update_cache(entity, id, cache, projection_class, stream_name)
             end
 
             logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
@@ -20,13 +19,10 @@ module EventStore
             cache_record
           end
 
-          def self.update_cache(id, cache, projection_class, stream_name, entity_class)
-            logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+          def self.update_cache(entity, id, cache, projection_class, stream_name, starting_position=nil)
+            logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
-            entity = new_entity(entity_class)
-
-
-            version = projection_class.! entity, stream_name
+            version = projection_class.! entity, stream_name, starting_position: starting_position
 
             projected = !!version
 
@@ -35,7 +31,7 @@ module EventStore
               cache_record = cache.put id, entity, version
             end
 
-            logger.trace "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.trace "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
             cache_record
           end
