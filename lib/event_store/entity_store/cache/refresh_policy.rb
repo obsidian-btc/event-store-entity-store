@@ -5,6 +5,7 @@ module EventStore
         class Error < StandardError; end
 
         def self.included(mod)
+          mod.extend Logger
           mod.extend UpdateCache
           mod.extend NewEntity
           mod.extend Refresh
@@ -84,7 +85,7 @@ module EventStore
               cache_record = cache.put id, entity, version
             end
 
-            logger.trace "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
+            logger.debug "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
             cache_record
           end
@@ -108,10 +109,16 @@ module EventStore
 
             cache_record = blk.(cache_record)
 
-            logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.debug "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
             logger.data "Cache Record: #{cache_record.inspect}"
 
             cache_record
+          end
+        end
+
+        module Logger
+          def logger
+            @logger ||= Telemetry::Logger.get self
           end
         end
       end
