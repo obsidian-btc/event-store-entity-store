@@ -7,6 +7,7 @@ module EventStore
         def self.included(mod)
           mod.extend UpdateCache
           mod.extend NewEntity
+          mod.extend Refresh
         end
 
         def self.!(*)
@@ -96,6 +97,21 @@ module EventStore
             else
               return entity_class.new
             end
+          end
+        end
+
+        module Refresh
+          def refresh(id, cache, projection_class, stream_name, entity_class, &blk)
+            logger.trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+
+            cache_record = cache.get(id)
+
+            cache_record = blk.(cache_record)
+
+            logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.data "Cache Record: #{cache_record.inspect}"
+
+            cache_record
           end
         end
       end
