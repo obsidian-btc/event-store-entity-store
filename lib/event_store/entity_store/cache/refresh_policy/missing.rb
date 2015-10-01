@@ -6,7 +6,7 @@ module EventStore
           def self.!(id, cache, projection_class, stream_name, entity_class)
             logger.trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
 
-            cache_record = cache.get(id)
+            entity, version = get_entity(id, cache, entity_class)
 
 
 
@@ -19,6 +19,22 @@ module EventStore
 
             cache_record
           end
+
+          def self.get_entity(id, cache, entity_class)
+            cache_record = cache.get(id)
+
+            unless cache_record
+              entity = new_entity(entity_class)
+              version = nil
+            else
+              entity = cache_record.entity
+              version = cache_record.version
+            end
+
+            return entity, version
+          end
+
+
 
           def self.update_cache(id, cache, projection_class, stream_name, entity_class)
             logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
@@ -40,7 +56,6 @@ module EventStore
             cache_record
           end
 
-
           def self.new_entity(entity_class)
             if entity_class.respond_to? :build
               return entity_class.build
@@ -48,7 +63,6 @@ module EventStore
               return entity_class.new
             end
           end
-
 
           def self.logger
             @logger ||= Telemetry::Logger.get self
