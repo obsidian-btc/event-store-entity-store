@@ -13,7 +13,7 @@ describe "Get Entity Using the None Refresh Policy" do
 
   retrieved_entity, version, time = store.get id, include: [:version, :time]
 
-  describe "Entity is not refreshed" do
+  describe "Cache is not refreshed" do
     specify "Entity" do
       assert(retrieved_entity.object_id == entity.object_id)
     end
