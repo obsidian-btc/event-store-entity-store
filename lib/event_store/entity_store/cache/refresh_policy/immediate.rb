@@ -8,29 +8,37 @@ module EventStore
 
             cache_record = cache.get(id)
 
-            entity = nil
-            starting_position = nil
-            if cache_record
+            unless cache_record
+              entity = new_entity(entity_class)
+              starting_position = nil
+            else
               entity = cache_record.entity
               starting_position = cache_record.version + 1
-            else
-              entity = new_entity(entity_class)
             end
+
+            cache_record = update_cache(entity, id, cache, projection_class, stream_name, starting_position)
+
+            logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.data "Cache Record: #{cache_record.inspect}"
+
+            cache_record
+          end
+
+          def self.update_cache(entity, id, cache, projection_class, stream_name, starting_position=nil)
+            logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
             version = projection_class.! entity, stream_name, starting_position: starting_position
 
-            got_entity = !!version
+            projected = !!version
 
-            if got_entity
-              new_cache_record = cache.put id, entity, version
-            else
-              new_cache_record = Cache::Record.new
+            cache_record = nil
+            if projected
+              cache_record = cache.put id, entity, version
             end
 
-            logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
-            logger.data "Cache Record: #{new_cache_record.inspect}"
+            logger.trace "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
-            new_cache_record
+            cache_record
           end
 
           def self.new_entity(entity_class)
