@@ -6,20 +6,9 @@ module EventStore
           def self.!(id, cache, projection_class, stream_name, entity_class)
             logger.trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
 
-            cache_record = cache.get(id)
+            entity, version = get_entity(id, cache, entity_class)
 
-
-
-            entity = nil
-            starting_position = nil
-            if cache_record
-              entity = cache_record.entity
-              starting_position = cache_record.version + 1
-            else
-              entity = new_entity(entity_class)
-            end
-
-
+            starting_position = version + 1 unless version.nil?
 
             version = projection_class.! entity, stream_name, starting_position: starting_position
 
@@ -30,12 +19,24 @@ module EventStore
               new_cache_record = cache.put id, entity, version
             end
 
-
-
             logger.trace "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
             logger.data "Cache Record: #{new_cache_record.inspect}"
 
             new_cache_record
+          end
+
+          def self.get_entity(id, cache, entity_class)
+            cache_record = cache.get(id)
+
+            unless cache_record
+              entity = new_entity(entity_class)
+              version = nil
+            else
+              entity = cache_record.entity
+              version = cache_record.version
+            end
+
+            return entity, version
           end
 
           def self.new_entity(entity_class)

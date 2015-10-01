@@ -40,6 +40,7 @@ module EventStore
             cache_record
           end
 
+
           def self.new_entity(entity_class)
             if entity_class.respond_to? :build
               return entity_class.build
