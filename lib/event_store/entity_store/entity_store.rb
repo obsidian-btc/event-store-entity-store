@@ -81,6 +81,11 @@ module EventStore
       end
     end
 
+    def get_version(id)
+      _, version = get id, include: :version
+      version
+    end
+
     def refresh_record(id, policy_name=nil)
       if policy_name.nil?
         refresh_policy = refresh
