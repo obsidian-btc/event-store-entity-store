@@ -11,6 +11,7 @@ module EventStore
       cls.send :dependency, :cache, EntityStore::Cache
       cls.send :dependency, :refresh, EntityStore::Cache::RefreshPolicy
       cls.send :dependency, :logger, Telemetry::Logger
+      cls.send :virtual, :configure_dependencies
     end
 
     module EntityMacro
@@ -44,6 +45,7 @@ module EventStore
           EntityStore::Cache.configure instance, instance.entity_class, scope: cache_scope
           EntityStore::Cache::RefreshPolicy.configure instance, refresh
           Telemetry::Logger.configure instance
+          instance.configure_dependencies
           logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
         end
       end
@@ -128,20 +130,46 @@ module EventStore
 
     module Substitute
       def self.build
-        Store.new
+        Store.build refresh: :none
       end
 
       class Store
-        def items
-          @items ||= {}
+        include EventStore::EntityStore
+
+        dependency :uuid, UUID::Random
+        dependency :clock, Clock::Local
+
+        category ' '
+        entity Object
+        projection Object
+
+        def configure_dependencies
+          UUID::Random.configure self
+          Clock::Local.configure self
         end
 
-        def merge(items)
-          self.items.merge! items
+        def add(id, entity, version=nil, time=nil)
+          cache.put(id, entity, version, time)
         end
 
-        def get(id)
-          items[id]
+        def merge(entities)
+          entities.is_a?(Array) and merge_entities(entities)
+          entities.is_a?(Hash) and merge_records(entities)
+        end
+
+        def merge_entities(entities)
+          entities.each do |entity|
+            id = uuid.get
+            add(id, entity)
+          end
+          nil
+        end
+
+        def merge_records(entities)
+          entities.each do |id, entity|
+            add(id, entity)
+          end
+          nil
         end
       end
     end
