@@ -130,7 +130,9 @@ module EventStore
 
     module Substitute
       def self.build
-        Store.build refresh: :none
+        store = Store.build refresh: :none
+        store.configure_dependencies
+        store
       end
 
       class Store
@@ -149,27 +151,33 @@ module EventStore
         end
 
         def add(id, entity, version=nil, time=nil)
+          time ||= clock.iso8601
+          logger.info time.inspect
           cache.put(id, entity, version, time)
         end
 
-        def merge(entities)
-          entities.is_a?(Array) and merge_entities(entities)
-          entities.is_a?(Hash) and merge_records(entities)
+        def merge(entities, version=nil, time=nil)
+          return merge_array(entities, version, time) if entities.is_a?(Array)
+          return merge_hash(entities, version, time) if entities.is_a?(Hash)
+
+          raise ArgumentError, "Merge does not support #{entities.class}"
         end
 
-        def merge_entities(entities)
+        def merge_array(entities, version=nil, time=nil)
+          records = []
           entities.each do |entity|
             id = uuid.get
-            add(id, entity)
+            records << add(id, entity, version, time)
           end
-          nil
+          records
         end
 
-        def merge_records(entities)
+        def merge_hash(entities, version=nil, time=nil)
+          records = []
           entities.each do |id, entity|
-            add(id, entity)
+            records << add(id, entity, version, time)
           end
-          nil
+          records
         end
       end
     end

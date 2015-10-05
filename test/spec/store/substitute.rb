@@ -27,10 +27,11 @@ describe "Store Substitute" do
     end
   end
 
-  describe "Retrieval of an added list of IDs and entities" do
+  describe "Retrieval of an added hash of IDs and entities" do
     entities = { id => entity}
 
-    store.merge entities
+    records = store.merge entities, version, cached_time
+    initial_cache_record = records.first
 
     retrieved_entity, retrieved_version, retrieved_time = store.get id, include: [:version, :time]
 
@@ -39,11 +40,32 @@ describe "Store Substitute" do
     end
 
     specify "Version" do
-      assert(retrieved_version == 0)
+      assert(retrieved_version == initial_cache_record.version)
     end
 
-    # specify "Time" do
-    #   assert(retrieved_time == initial_cache_record.time)
-    # end
+    specify "Time" do
+      assert(retrieved_time == initial_cache_record.time)
+    end
+  end
+
+  describe "Retrieval of an added array of entities" do
+    entities = [ entity ]
+
+    records = store.merge entities, version, cached_time
+    initial_cache_record = records.first
+
+    retrieved_entity, retrieved_version, retrieved_time = store.get id, include: [:version, :time]
+
+    specify "Entity" do
+      assert(retrieved_entity.object_id == entity.object_id)
+    end
+
+    specify "Version" do
+      assert(retrieved_version == initial_cache_record.version)
+    end
+
+    specify "Time" do
+      assert(retrieved_time == initial_cache_record.time)
+    end
   end
 end
