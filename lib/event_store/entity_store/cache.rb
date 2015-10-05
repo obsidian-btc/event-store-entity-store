@@ -20,7 +20,7 @@ module EventStore
 
       def put(id, entity, version=nil, time=nil)
         version ||= 0
-        time ||= clock.iso8601
+        time ||= clock.now
 
         logger.trace "Putting record into cache (ID: #{id}, Entity Class: #{entity.class.name}, Version: #{version}, Time: #{time})"
 
