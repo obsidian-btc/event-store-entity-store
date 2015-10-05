@@ -151,7 +151,7 @@ module EventStore
         end
 
         def add(id, entity, version=nil, time=nil)
-          time ||= clock.iso8601
+          time ||= clock.now
           logger.info time.inspect
           cache.put(id, entity, version, time)
         end
