@@ -15,8 +15,8 @@ module EventStore
                 starting_position = cache_record.version + 1
               end
 
-              cache_record = update_cache(entity, id, cache, projection_class, stream_name, starting_position)
-              cache_record
+              updated_cache_record = update_cache(entity, id, cache, projection_class, stream_name, starting_position)
+              updated_cache_record || cache_record
             end
           end
         end
