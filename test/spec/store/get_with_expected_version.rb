@@ -6,16 +6,19 @@ describe "Get with Expected Version" do
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
   category_name = stream_name.split('-')[0]
 
-  store = EventStore::EntityStore::Controls::Store::SomeStore.build
-  store.category_name = category_name
-
   context "Right version" do
+    store = EventStore::EntityStore::Controls::Store::SomeStore.build
+    store.category_name = category_name
+
     specify "Is not an error" do
       store.get id, expected_version: 1
     end
   end
 
   context "Wrong version" do
+    store = EventStore::EntityStore::Controls::Store::SomeStore.build
+    store.category_name = category_name
+
     specify "Is an error" do
       assert_raises(EventStore::EntityStore::Cache::Error) do
         store.get id, expected_version: 11

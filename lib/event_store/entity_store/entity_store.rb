@@ -70,14 +70,20 @@ module EventStore
 
       cache_record = refresh_record(id, refresh)
 
+      logger.pass "expected_version: #{expected_version}"
+
       entity, version = nil
       unless cache_record.nil?
         entity = cache_record.entity
         version = cache_record.version
 
+        logger.pass version
+
         unless expected_version.nil?
           cache_record.assure_version(expected_version)
         end
+      else
+        logger.fail "no cache hit"
       end
 
       logger.debug "Get entity done: #{EntityStore::LogText.entity(entity)} (ID: #{id}, Version: #{EntityStore::LogText.version(version)}, Include: #{include})"
