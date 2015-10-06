@@ -70,6 +70,12 @@ module EventStore
 
       cache_record = refresh_record(id, refresh)
 
+      logger.pass "store object: #{object_id}"
+      logger.pass "cache object: #{cache.object_id}"
+      logger.pass "cache type: #{cache.class}"
+      logger.pass "cache count: #{cache.records.length}"
+      logger.pass "cache records: #{cache.records.inspect}"
+
       logger.pass "expected_version: #{expected_version}"
 
       entity, version = nil
