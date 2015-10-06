@@ -1,7 +1,7 @@
 module EventStore
   module EntityStore
     class Cache
-      class InvalidSubjectError < StandardError; end
+      class InvalidSubjectError < RuntimeError; end
 
       attr_reader :subject
 

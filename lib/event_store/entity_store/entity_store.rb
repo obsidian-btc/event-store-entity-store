@@ -1,5 +1,7 @@
 module EventStore
   module EntityStore
+    class Error < RuntimeError; end
+
     def self.included(cls)
       cls.extend EntityMacro
       cls.extend ProjectionMacro
@@ -63,7 +65,7 @@ module EventStore
       @category_name = val
     end
 
-    def get(id, include: nil, refresh: nil)
+    def get(id, include: nil, expected_version: nil, refresh: nil)
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Include: #{include})"
 
       cache_record = refresh_record(id, refresh)
@@ -72,6 +74,10 @@ module EventStore
       unless cache_record.nil?
         entity = cache_record.entity
         version = cache_record.version
+
+        unless expected_version.nil?
+          cache_record.assure_version(expected_version)
+        end
       end
 
       logger.debug "Get entity done: #{EntityStore::LogText.entity(entity)} (ID: #{id}, Version: #{EntityStore::LogText.version(version)}, Include: #{include})"

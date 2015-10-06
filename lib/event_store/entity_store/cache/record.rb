@@ -2,6 +2,8 @@ module EventStore
   module EntityStore
     class Cache
       Record = Struct.new(:entity, :id, :version, :time) do
+        class Error < RuntimeError; end
+
         def age
           Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
         end
@@ -19,6 +21,12 @@ module EventStore
             return entity
           else
             return responses.unshift(entity)
+          end
+        end
+
+        def assure_version(expected_version)
+          unless expected_version == version
+            raise Error, "Expected version #{expected_version} is not the cached version #{version}"
           end
         end
 
