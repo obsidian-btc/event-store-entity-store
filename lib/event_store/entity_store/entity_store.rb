@@ -71,7 +71,8 @@ module EventStore
       cache_record = refresh_record(id, refresh)
 
       entity, version = nil
-      unless cache_record.nil?
+
+      if cache_record
         entity = cache_record.entity
         version = cache_record.version
 
