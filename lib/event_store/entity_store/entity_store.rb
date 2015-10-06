@@ -69,11 +69,18 @@ module EventStore
       logger.trace "Getting entity (Class: #{entity_class}, ID: #{id}, Include: #{include})"
 
       cache_record = refresh_record(id, refresh)
+      # maybe refreshing is to blame
+      # a nil is being returned on the second attempt
+
+
+      logger.pass "getting id: #{id}"
 
       logger.pass "store object: #{object_id}"
+
       logger.pass "cache object: #{cache.object_id}"
       logger.pass "cache type: #{cache.class}"
       logger.pass "cache count: #{cache.records.length}"
+
       logger.pass "cache records: #{cache.records.inspect}"
 
       logger.pass "expected_version: #{expected_version}"
