@@ -1,6 +1,8 @@
 require_relative '../store_init'
 
 describe "Get Entity Using the Missing Refresh Policy" do
+  EventStore::EntityStore::Cache::RefreshPolicy.policies[:missing] = EventStore::EntityStore::Cache::RefreshPolicy::Missing
+
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   store = EventStore::EntityStore::Controls::Store::SomeStore.build refresh: :missing

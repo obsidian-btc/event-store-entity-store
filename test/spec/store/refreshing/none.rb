@@ -1,6 +1,8 @@
 require_relative '../store_init'
 
 describe "Get Entity Using the None Refresh Policy" do
+  EventStore::EntityStore::Cache::RefreshPolicy.policies[:none] = EventStore::EntityStore::Cache::RefreshPolicy::None
+
   store = EventStore::EntityStore::Controls::Store::SomeStore.build refresh: :none
 
   id = ::Controls::ID.get
