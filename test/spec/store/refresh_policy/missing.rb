@@ -13,7 +13,7 @@ describe "Missing Cache Refresh Policy" do
 
     cache.put id, entity, 0
 
-    refresh.! id, cache, projection_class, stream_name, entity.class
+    refresh.(id, cache, projection_class, stream_name, entity.class)
 
     record = cache.get id
     retrieved_entity = record.entity
@@ -29,7 +29,7 @@ describe "Missing Cache Refresh Policy" do
     stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
     id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
 
-    refresh.! id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity.entity_class
+    refresh.(id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity.entity_class)
 
     record = cache.get id
     entity = record.entity
