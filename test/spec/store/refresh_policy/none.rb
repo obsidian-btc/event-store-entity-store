@@ -12,7 +12,7 @@ describe "None Cache Refresh Policy" do
     entity = EventStore::EntityStore::Controls::Entity.new
     cache.put id, entity, 0
 
-    refresh.! id, cache, projection_class, stream_name, entity.class
+    refresh.(id, cache, projection_class, stream_name, entity.class)
 
     describe "Doesn't update the entity" do
       record = cache.get id
@@ -31,7 +31,7 @@ describe "None Cache Refresh Policy" do
   describe "The entity is not previously cached" do
     cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
 
-    refresh.! id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity
+    refresh.(id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity)
 
     record = cache.get id
 

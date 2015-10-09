@@ -5,7 +5,7 @@ module EventStore
         module Immediate
           include RefreshPolicy
 
-          def self.!(id, cache, projection_class, stream_name, entity_class)
+          def self.call(id, cache, projection_class, stream_name, entity_class)
             refresh(id, cache, projection_class, stream_name, entity_class) do |cache_record|
               unless cache_record
                 entity = new_entity(entity_class)
@@ -19,6 +19,7 @@ module EventStore
               updated_cache_record || cache_record
             end
           end
+          class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
         end
       end
     end

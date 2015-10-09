@@ -106,7 +106,7 @@ module EventStore
 
       stream_name = stream_name(id)
 
-      cache_record = refresh_policy.! id, cache, projection_class, stream_name, entity_class
+      cache_record = refresh_policy.(id, cache, projection_class, stream_name, entity_class)
 
       logger.debug "Refreshed cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
 
