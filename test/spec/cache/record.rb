@@ -3,7 +3,7 @@ require_relative 'cache_init'
 describe "Cache Record" do
   cache = EventStore::EntityStore::Cache::Scope::Exclusive.build :some_subject
 
-  id = UUID::Random.get
+  id = Identifier::UUID::Random.get
   version = 11
   time = Clock::UTC.iso8601
 

@@ -145,7 +145,7 @@ module EventStore
       class Store
         include EventStore::EntityStore
 
-        dependency :uuid, UUID::Random
+        dependency :uuid, Identifier::UUID::Random
         dependency :clock, Clock::Local
 
         category ' '
@@ -153,7 +153,7 @@ module EventStore
         projection Object
 
         def configure_dependencies
-          UUID::Random.configure self
+          Identifier::UUID::Random.configure self
           Clock::Local.configure self
         end
 

@@ -1,7 +1,7 @@
 require_relative '../../cache_init'
 
 describe "Validate Subject when Putting it Into the Cache" do
-  id = UUID::Random.get
+  id = Identifier::UUID::Random.get
 
   describe "Subject is valid" do
     specify "Subject is readable and writeable" do

@@ -9,10 +9,10 @@ describe "Retrieve an Item from the Cache" do
 
     cache = EventStore::EntityStore::Cache::Scope::Shared.build entity.class
 
-    id = UUID::Random.get
+    id = Identifier::UUID::Random.get
     cache.put id, entity
 
-    other_id = UUID::Random.get
+    other_id = Identifier::UUID::Random.get
     cache.put other_id, other_entity
 
     cache_record = cache.get(id)
@@ -27,7 +27,7 @@ describe "Retrieve an Item from the Cache" do
 
     cache = EventStore::EntityStore::Cache::Scope::Shared.build entity_class
 
-    some_id = UUID::Random.get
+    some_id = Identifier::UUID::Random.get
 
     record = cache.get(some_id)
 
