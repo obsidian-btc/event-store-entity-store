@@ -1,3 +1,4 @@
+require 'identifier/uuid'
 require 'set_attributes'
 require 'schema'
 require 'telemetry/logger'
