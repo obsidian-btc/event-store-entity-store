@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name = 'event_store-entity_store'
   s.summary = 'Store of entities that are projected from EventStore streams'
-  s.version = '0.0.0'
+  s.version = '0.1.0'
   s.authors = ['']
   s.require_paths = ['lib']
   s.files = Dir.glob('{lib}/**/*')
