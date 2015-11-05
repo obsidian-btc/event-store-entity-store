@@ -7,7 +7,6 @@ puts RUBY_DESCRIPTION
 require_relative '../init.rb'
 require 'securerandom'
 require 'runner'
-require 'fixture'
 
 require 'event_store/entity_store/controls'
 
