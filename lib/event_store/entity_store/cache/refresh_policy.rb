@@ -39,7 +39,7 @@ module EventStore
         def self.policies
           @policies ||= {
             immediate: Immediate,
-            # none: None,
+            none: None,
             # missing: Missing
           }
         end
