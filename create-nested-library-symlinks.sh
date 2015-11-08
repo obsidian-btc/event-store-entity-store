@@ -44,7 +44,8 @@ function symlink-library {
   fi
   src="$src/$name"
 
-  echo "Destination is $dest"
+  echo "- destination is $dest"
+  echo
 
   full_name=$directory/$name
 
