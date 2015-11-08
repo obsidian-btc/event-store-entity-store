@@ -22,7 +22,7 @@ function make_directory {
   fi
 }
 
-function symlink-library {
+function symlink-lib {
   name=$1
   directory=$2
 
