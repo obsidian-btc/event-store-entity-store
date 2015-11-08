@@ -38,8 +38,6 @@ function remove_lib_symlinks {
       rm $entry
     fi
   done
-
-  echo
 }
 
 function symlink_lib {
