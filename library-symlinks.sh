@@ -18,7 +18,6 @@ function make_directory {
   if [ ! -d "$lib_directory" ]; then
     echo "- making directory $lib_directory"
     mkdir -p "$lib_directory"
-    echo
   fi
 }
 
@@ -60,6 +59,7 @@ function symlink_lib {
   fi
   src="$src/$name"
 
+  echo
   echo "- destination is $dest"
   echo
 
