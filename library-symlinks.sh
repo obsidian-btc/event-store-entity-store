@@ -22,13 +22,35 @@ function make_directory {
   fi
 }
 
-function symlink-lib {
+function remove_lib_symlinks {
+  name=$1
+  directory=$2
+
+  dest="$LIBRARIES_DIR"
+  if [ ! -z "$directory" ]; then
+    dest="$dest/$directory"
+  fi
+  dest="$dest/$name"
+
+  for entry in $dest*; do
+    if [ -h "$entry" ]; then
+      echo "- removing symlink: $entry"
+      rm $entry
+    fi
+  done
+
+  echo
+}
+
+function symlink_lib {
   name=$1
   directory=$2
 
   echo
   echo "Symlinking $name"
   echo "- - -"
+
+  remove_lib_symlinks $name $directory
 
   src="$(PWD)/lib"
   dest="$LIBRARIES_DIR"
@@ -48,11 +70,6 @@ function symlink-lib {
   for entry in $src*; do
     entry_basename=$(basename $entry)
     dest_item="$dest/$entry_basename"
-
-    if [ -h "$dest_item" ]; then
-      echo "- removing symlink: $dest_item"
-      rm $dest_item
-    fi
 
     echo "- symlinking $entry_basename to $dest_item"
 
