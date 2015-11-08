@@ -67,19 +67,6 @@ function symlink-library {
     echo
   done
 
-
-  # if [ -h "$dest/$name" ]; then
-  #   for entry in $LIBRARIES_DIR/$full_name*; do
-  #     if [ -e "$entry" ]; then
-  #       echo "- removing symlink: $entry"
-  #       rm $entry
-  #     fi
-  #   done
-  # fi
-
-  # echo "- creating symlinks"
-  # ln -s $(PWD)/lib/$full_name* $dest
-
   echo "- - -"
   echo "($name done)"
   echo
