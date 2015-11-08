@@ -10,22 +10,16 @@ if [ ! -d "$LIBRARIES_DIR" ]; then
   exit 1
 fi
 
-function symlink-nested-library {
+function make_directory {
   directory=$1
-  name=$2
 
-  echo
-  echo "Symlinking $name"
-  echo "- - -"
+  lib_directory="$LIBRARIES_DIR/$directory"
 
-  dest="$LIBRARIES_DIR/$directory"
-
-  if [ ! -d "$dest" ]; then
-    echo "Making directory $dest"
-    mkdir -p "$dest"
+  if [ ! -d "$lib_directory" ]; then
+    echo "- making directory $lib_directory"
+    mkdir -p "$lib_directory"
+    echo
   fi
-
-  symlink-library $name $directory
 }
 
 function symlink-library {
@@ -41,6 +35,8 @@ function symlink-library {
   if [ ! -z "$directory" ]; then
     src="$src/$directory"
     dest="$dest/$directory"
+
+    make_directory $directory
   fi
   src="$src/$name"
 
