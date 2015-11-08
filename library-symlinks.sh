@@ -59,9 +59,7 @@ function symlink_lib {
   fi
   src="$src/$name"
 
-  echo
   echo "- destination is $dest"
-  echo
 
   full_name=$directory/$name
 
@@ -74,8 +72,6 @@ function symlink_lib {
     cmd="ln -s $entry $dest_item"
     echo $cmd
     ($cmd)
-
-    echo
   done
 
   echo "- - -"
