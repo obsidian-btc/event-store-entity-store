@@ -38,7 +38,7 @@ describe "Default Refresh Policy" do
 
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class
 
-    logger(__FILE__).info policy.inspect
+    __logger.info policy.inspect
 
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::None)
 

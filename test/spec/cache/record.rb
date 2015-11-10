@@ -30,6 +30,6 @@ describe "Cache Record" do
   end
 
   specify "Age" do
-    logger(__FILE__).data "(#{record.age.class}) #{record.age}"
+    __logger.data "(#{record.age.class}) #{record.age}"
   end
 end
