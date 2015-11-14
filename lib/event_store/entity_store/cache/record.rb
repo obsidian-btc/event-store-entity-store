@@ -4,8 +4,15 @@ module EventStore
       Record = Struct.new(:entity, :id, :version, :time) do
         class Error < RuntimeError; end
 
-        def age
-          Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
+        module NoStream
+          def self.destructure(includes=nil)
+            nil_record = Record.new(nil, nil, nil, nil)
+            nil_record.destructure(includes)
+          end
+
+          def self.version
+            :no_stream
+          end
         end
 
         def destructure(includes=nil)
@@ -14,7 +21,13 @@ module EventStore
 
           responses = []
           includes.each do |attribute|
-            responses << send(attribute)
+            value = send(attribute)
+
+            if attribute == :version && value.nil?
+              value = NoStream.version
+            end
+
+            responses << value
           end
 
           if responses.empty?
@@ -22,6 +35,10 @@ module EventStore
           else
             return responses.unshift(entity)
           end
+        end
+
+        def age
+          Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
         end
 
         def assure_version(expected_version)

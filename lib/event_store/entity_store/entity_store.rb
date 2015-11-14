@@ -86,7 +86,7 @@ module EventStore
       if cache_record
         return cache_record.destructure(include)
       else
-        return nil
+        return nil #, :no_stream
       end
     end
 
