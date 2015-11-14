@@ -1,18 +1,19 @@
 module EventStore
   module EntityStore
     class Cache
-      Record = Struct.new(:entity, :id, :version, :time) do
+      class Record
         class Error < RuntimeError; end
 
-        module NoStream
-          def self.destructure(includes=nil)
-            nil_record = Record.new(nil, nil, nil, nil)
-            nil_record.destructure(includes)
-          end
+        attr_reader :entity
+        attr_reader :id
+        attr_reader :version
+        attr_reader :time
 
-          def self.version
-            :no_stream
-          end
+        def initialize(entity, id, version, time)
+          @entity = entity
+          @id = id
+          @version = version
+          @time = time
         end
 
         def destructure(includes=nil)
@@ -36,6 +37,18 @@ module EventStore
             return responses.unshift(entity)
           end
         end
+
+        module NoStream
+          def self.destructure(includes=nil)
+            nil_record = Record.new(nil, nil, nil, nil)
+            nil_record.destructure(includes)
+          end
+
+          def self.version
+            :no_stream
+          end
+        end
+
 
         def age
           Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)

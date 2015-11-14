@@ -12,7 +12,7 @@ describe "Destructure Nils" do
 
   specify "Version is :no_stream" do
     _, version = record_class.destructure(:version)
-    assert(version == :no_entity)
+    assert(version == :no_stream)
   end
 
   # describe "Entity, Including Single Attribute" do
