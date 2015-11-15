@@ -75,18 +75,24 @@ module EventStore
       if cache_record
         entity = cache_record.entity
         version = cache_record.version
-
-        unless expected_version.nil?
-          cache_record.assure_version(expected_version)
-        end
       end
 
       logger.debug "Get entity done: #{EntityStore::LogText.entity(entity)} (ID: #{id}, Version: #{EntityStore::LogText.version(version)}, Include: #{include})"
 
+      unless expected_version.nil?
+        EntityStore.assure_version(expected_version, version)
+      end
+
       if cache_record
         return cache_record.destructure(include)
       else
-        return nil
+        return Cache::Record::NoStream.destructure(include)
+      end
+    end
+
+    def self.assure_version(expected_version, version)
+      unless expected_version == version
+        raise Error, "Expected version #{expected_version} is not the cached version #{version || '(nil)'}"
       end
     end
 
