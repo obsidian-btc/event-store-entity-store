@@ -49,7 +49,6 @@ module EventStore
           end
         end
 
-
         def age
           Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
         end

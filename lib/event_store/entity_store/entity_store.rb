@@ -76,6 +76,7 @@ module EventStore
         entity = cache_record.entity
         version = cache_record.version
 
+        # move to later, when all branches of version are completed
         unless expected_version.nil?
           cache_record.assure_version(expected_version)
         end
@@ -86,7 +87,7 @@ module EventStore
       if cache_record
         return cache_record.destructure(include)
       else
-        return nil #, :no_stream
+        return Cache::Record::NoStream.destructure(include)
       end
     end
 
