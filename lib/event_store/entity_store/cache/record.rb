@@ -53,12 +53,6 @@ module EventStore
           Clock::UTC.elapsed_milliseconds(time, Clock::UTC.now)
         end
 
-        def assure_version(expected_version)
-          unless expected_version == version
-            raise Error, "Expected version #{expected_version} is not the cached version #{version}"
-          end
-        end
-
         def logger
           @logger ||= Telemetry::Logger.get self
         end
