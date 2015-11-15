@@ -20,7 +20,7 @@ describe "Get with Expected Version" do
     store.category_name = category_name
 
     specify "Is an error" do
-      assert_raises(EventStore::EntityStore::Cache::Error) do
+      assert_raises(EventStore::EntityStore::Cache::Record::Error) do
         store.get id, expected_version: 11
       end
     end
