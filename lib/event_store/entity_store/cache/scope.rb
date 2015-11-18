@@ -7,7 +7,7 @@ module EventStore
         module Defaults
           module Name
             def self.env_var_name
-              'ENTITY_CACHE'
+              'ENTITY_CACHE_SCOPE'
             end
 
             def self.env_var_value
@@ -15,7 +15,7 @@ module EventStore
             end
 
             def self.name
-              'exclusive'
+              'shared'
             end
 
             def self.get
