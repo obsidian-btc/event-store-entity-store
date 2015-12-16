@@ -54,9 +54,9 @@ module EventStore
     end
 
     module Configure
-      def configure(receiver)
+      def configure(receiver, attr_name)
         instance = build
-        receiver.store = instance
+        receiver.send attr_name, instance
         instance
       end
     end
