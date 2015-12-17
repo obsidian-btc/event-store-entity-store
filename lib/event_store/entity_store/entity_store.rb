@@ -57,7 +57,7 @@ module EventStore
       def configure(receiver, attr_name=nil)
         attr_name ||= :store
         instance = build
-        receiver.send attr_name, instance
+        receiver.send "#{attr_name}=", instance
         instance
       end
     end
