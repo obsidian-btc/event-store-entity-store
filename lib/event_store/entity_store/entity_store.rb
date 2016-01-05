@@ -144,7 +144,7 @@ module EventStore
 
     module Substitute
       def self.build
-        store = Store.build refresh: :none
+        store = Store.build refresh: :none, scope: :exclusive
         store.configure_dependencies
         store
       end
