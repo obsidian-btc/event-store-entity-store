@@ -1,6 +1,6 @@
 require_relative './store_init'
 
-describe "Store Substitute" do
+context "Store Substitute" do
   store = EventStore::EntityStore::Substitute.build
 
   id = ::Controls::ID.get
@@ -10,24 +10,24 @@ describe "Store Substitute" do
   version = 1
   cached_time = Time.now
 
-  describe "Retrieval of an added entity" do
+  context "Retrieval of an added entity" do
     initial_cache_record = store.add id, entity, version, cached_time
     retrieved_entity, retrieved_version, retrieved_time = store.get id, include: [:version, :time]
 
-    specify "Entity" do
+    test "Entity" do
       assert(retrieved_entity.object_id == entity.object_id)
     end
 
-    specify "Version" do
+    test "Version" do
       assert(retrieved_version == initial_cache_record.version)
     end
 
-    specify "Time" do
+    test "Time" do
       assert(retrieved_time == initial_cache_record.time)
     end
   end
 
-  describe "Retrieval of an added hash of IDs and entities" do
+  context "Retrieval of an added hash of IDs and entities" do
     entities = { id => entity}
 
     records = store.merge entities, version, cached_time
@@ -35,20 +35,20 @@ describe "Store Substitute" do
 
     retrieved_entity, retrieved_version, retrieved_time = store.get id, include: [:version, :time]
 
-    specify "Entity" do
+    test "Entity" do
       assert(retrieved_entity.object_id == entity.object_id)
     end
 
-    specify "Version" do
+    test "Version" do
       assert(retrieved_version == initial_cache_record.version)
     end
 
-    specify "Time" do
+    test "Time" do
       assert(retrieved_time == initial_cache_record.time)
     end
   end
 
-  describe "Retrieval of an added array of entities" do
+  context "Retrieval of an added array of entities" do
     entities = [ entity ]
 
     records = store.merge entities, version, cached_time
@@ -56,15 +56,15 @@ describe "Store Substitute" do
 
     retrieved_entity, retrieved_version, retrieved_time = store.get id, include: [:version, :time]
 
-    specify "Entity" do
+    test "Entity" do
       assert(retrieved_entity.object_id == entity.object_id)
     end
 
-    specify "Version" do
+    test "Version" do
       assert(retrieved_version == initial_cache_record.version)
     end
 
-    specify "Time" do
+    test "Time" do
       assert(retrieved_time == initial_cache_record.time)
     end
   end

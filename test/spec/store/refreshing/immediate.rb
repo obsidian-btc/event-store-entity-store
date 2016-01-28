@@ -2,7 +2,7 @@ require_relative '../store_init'
 
 require_relative '../store_init'
 
-describe "Get Entity Using the Immediate Refresh Policy" do
+context "Get Entity Using the Immediate Refresh Policy" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   store = EventStore::EntityStore::Controls::Store::SomeStore.build refresh: :immediate
@@ -20,17 +20,17 @@ describe "Get Entity Using the Immediate Refresh Policy" do
 
   retrieved_entity, version, time = store.get id, include: [:version, :time]
 
-  describe "Cache is refreshed" do
-    specify "Entity" do
-      refute(entity.nil?)
+  context "Cache is refreshed" do
+    test "Entity" do
+      assert(!entity.nil?)
     end
 
-    specify "Version is updated" do
-      refute(version == initial_cache_record.version)
+    test "Version is updated" do
+      assert(version != initial_cache_record.version)
     end
 
-    specify "Time is updated" do
-      refute(time == initial_cache_record.time)
+    test "Time is updated" do
+      assert(time != initial_cache_record.time)
     end
   end
 end

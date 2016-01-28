@@ -1,37 +1,42 @@
 require_relative '../store_init'
 
-describe "Select Refresh Policy Implementation" do
-  specify "Immediate" do
+context "Select Refresh Policy Implementation" do
+  test "Immediate" do
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class(:immediate)
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::Immediate)
   end
 
-  specify "None" do
+  test "None" do
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class(:none)
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::None)
   end
 
-  specify "Missing" do
+  test "Missing" do
+    EventStore::EntityStore::Cache::RefreshPolicy.policies[:missing] = EventStore::EntityStore::Cache::RefreshPolicy::Missing
+
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class(:missing)
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::Missing)
   end
 end
 
-describe "Unknown" do
-  specify "Error" do
-    assert_raises(EventStore::EntityStore::Cache::RefreshPolicy::Error) do
+context "Unknown" do
+  test "Error" do
+    begin
       EventStore::EntityStore::Cache::RefreshPolicy.policy_class(SecureRandom.random_bytes)
+    rescue EventStore::EntityStore::Cache::RefreshPolicy::Error => error
     end
+
+    assert error
   end
 end
 
-describe "Default Refresh Policy" do
-  specify "Immediate" do
+context "Default Refresh Policy" do
+  test "Immediate" do
     policy = EventStore::EntityStore::Cache::RefreshPolicy.policy_class
     assert(policy == EventStore::EntityStore::Cache::RefreshPolicy::Immediate)
   end
 
-  specify "Can be specified with the ENTITY_CACHE_REFRESH environment variable" do
+  test "Can be specified with the ENTITY_CACHE_REFRESH environment variable" do
     saved_setting = EventStore::EntityStore::Cache::RefreshPolicy::Defaults::Name.env_var_value
 
     ENV[EventStore::EntityStore::Cache::RefreshPolicy::Defaults::Name.env_var_name] = 'none'

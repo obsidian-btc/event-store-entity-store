@@ -1,6 +1,6 @@
 require_relative 'cache_init'
 
-describe "Cache Record" do
+context "Cache Record" do
   cache = EventStore::EntityStore::Cache::Scope::Exclusive.build :some_subject
 
   id = Identifier::UUID::Random.get
@@ -13,23 +13,23 @@ describe "Cache Record" do
 
   record = cache.get(id)
 
-  specify "Entity" do
+  test "Entity" do
     assert(record.entity == entity)
   end
 
-  specify "ID" do
+  test "ID" do
     assert(record.id == id)
   end
 
-  specify "Version" do
+  test "Version" do
     assert(record.version == version)
   end
 
-  specify "Time" do
+  test "Time" do
     assert(record.time == time)
   end
 
-  specify "Age" do
+  test "Age" do
     __logger.data "(#{record.age.class}) #{record.age}"
   end
 end

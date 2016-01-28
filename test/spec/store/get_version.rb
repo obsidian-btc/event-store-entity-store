@@ -1,6 +1,6 @@
 require_relative './store_init'
 
-describe "Get Version" do
+context "Get Version" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
@@ -9,7 +9,7 @@ describe "Get Version" do
   store = EventStore::EntityStore::Controls::Store::SomeStore.build
   store.category_name = category_name
 
-  specify "Gets the version number of identified entity (applying the cache refresh policy that is in-effect)" do
+  test "Gets the version number of identified entity (applying the cache refresh policy that is in-effect)" do
     version = store.get_version id
     assert(version == 1)
   end

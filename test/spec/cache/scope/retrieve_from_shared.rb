@@ -1,7 +1,7 @@
 require_relative '../cache_init'
 
-describe "Retrieve an Item from the Cache" do
-  describe "When the Item is in the Cache" do
+context "Retrieve an Item from the Cache" do
+  context "When the Item is in the Cache" do
     entity = EventStore::EntityStore::Controls::Entity.example
 
     other_entity = EventStore::EntityStore::Controls::Entity.example
@@ -17,12 +17,12 @@ describe "Retrieve an Item from the Cache" do
 
     cache_record = cache.get(id)
 
-    specify "Retrieves the record" do
+    test "Retrieves the record" do
       assert(cache_record.entity == entity)
     end
   end
 
-  describe "When the Item is Not in the Cache" do
+  context "When the Item is Not in the Cache" do
     entity_class = EventStore::EntityStore::Controls::Entity.entity_class
 
     cache = EventStore::EntityStore::Cache::Scope::Shared.build entity_class
@@ -31,7 +31,7 @@ describe "Retrieve an Item from the Cache" do
 
     record = cache.get(some_id)
 
-    specify "There is no record" do
+    test "There is no record" do
       assert(record.nil?)
     end
   end

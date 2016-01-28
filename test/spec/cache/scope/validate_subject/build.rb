@@ -1,29 +1,38 @@
 require_relative '../../cache_init'
 
-describe "Validate Cache Subject when Constructing the Cache" do
-  describe "Subject is valid" do
-    specify "Subject is readable and writeable" do
+context "Validate Cache Subject when Constructing the Cache" do
+  context "Subject is valid" do
+    test "Subject is readable and writeable" do
       EventStore::EntityStore::Controls::Scope::ReadableAndWritable.build :some_subject
     end
   end
 
-  describe "Subject is invalid" do
-    specify "Subject is readable but not writeable" do
-      assert_raises EventStore::EntityStore::Cache::InvalidSubjectError do
+  context "Subject is invalid" do
+    test "Subject is readable but not writeable" do
+      begin
         EventStore::EntityStore::Controls::Scope::ReadableNotWritable.build :some_subject
+      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
       end
+
+      assert error
     end
 
-    specify "Subject is not readable but writeable" do
-      assert_raises EventStore::EntityStore::Cache::InvalidSubjectError do
+    test "Subject is not readable but writeable" do
+      begin
         EventStore::EntityStore::Controls::Scope::WritableNotReadable.build :some_subject
+      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
       end
+
+      assert error
     end
 
-    specify "Subject is not readable and not writeable" do
-      assert_raises EventStore::EntityStore::Cache::InvalidSubjectError do
+    test "Subject is not readable and not writeable" do
+      begin
         EventStore::EntityStore::Controls::Scope::NotReadableNotWritable.build :some_subject
+      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
       end
+
+      assert error
     end
   end
 end

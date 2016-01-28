@@ -1,18 +1,18 @@
 require_relative 'cache_init'
 
-describe "Destructure Cache Record" do
+context "Destructure Cache Record" do
   record = EventStore::EntityStore::Controls::Record.example
 
   attributes = [:id, :version, :time]
 
-  specify "Entity only" do
+  test "Entity only" do
     entity = record.destructure
     assert(entity == record.entity)
   end
 
-  describe "Entity, Including Single Attribute" do
+  context "Entity, Including Single Attribute" do
     attributes.each do |attribute|
-      specify attribute.to_s.capitalize do
+      test attribute.to_s.capitalize do
         entity, atr = record.destructure(attribute)
 
         assert(entity == record.entity)
@@ -21,9 +21,9 @@ describe "Destructure Cache Record" do
     end
   end
 
-  describe "Entity, Including Two Attributes" do
+  context "Entity, Including Two Attributes" do
     attributes.permutation(2).each do |attr_1, attr_2|
-      specify "#{attr_1.to_s.capitalize}, #{attr_2.to_s.capitalize}" do
+      test "#{attr_1.to_s.capitalize}, #{attr_2.to_s.capitalize}" do
         entity, atr1, atr2 = record.destructure([attr_1, attr_2])
 
         assert(entity == record.entity)
@@ -33,9 +33,9 @@ describe "Destructure Cache Record" do
     end
   end
 
-  describe "Entity, Including Three Attributes" do
+  context "Entity, Including Three Attributes" do
     attributes.permutation(3).each do |attr_1, attr_2, attr_3|
-      specify "#{attr_1.to_s.capitalize}, #{attr_2.to_s.capitalize}, #{attr_3.to_s.capitalize}" do
+      test "#{attr_1.to_s.capitalize}, #{attr_2.to_s.capitalize}, #{attr_3.to_s.capitalize}" do
         entity, atr1, atr2, atr3 = record.destructure([attr_1, attr_2, attr_3])
 
         assert(entity == record.entity)

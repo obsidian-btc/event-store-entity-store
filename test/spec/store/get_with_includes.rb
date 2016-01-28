@@ -1,59 +1,59 @@
 require_relative './store_init'
 
-describe "Get, with Includes" do
+context "Get, with Includes" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
   category_name = stream_name.split('-')[0]
 
-  specify "Entity" do
+  test "Entity" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     retrieved_entity, _ = store.get id, include: :id
-    refute(retrieved_entity.nil?)
+    assert(!retrieved_entity.nil?)
   end
 
-  specify "ID" do
+  test "ID" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     _, id = store.get id, include: :id
-    refute(id.nil?)
+    assert(!id.nil?)
   end
 
-  specify "Version" do
+  test "Version" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     _, version = store.get id, include: :version
-    refute(version.nil?)
+    assert(!version.nil?)
   end
 
-  specify "Time" do
+  test "Time" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     _, time = store.get id, include: :time
-    refute(time.nil?)
+    assert(!time.nil?)
   end
 
-  specify "Two Includes" do
+  test "Two Includes" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     _, version, retrieved_id = store.get id, include: [:version, :id]
-    refute(version.nil?)
-    refute(retrieved_id.nil?)
+    assert(!version.nil?)
+    assert(!retrieved_id.nil?)
   end
 
-  specify "Three Includes" do
+  test "Three Includes" do
     store = EventStore::EntityStore::Controls::Store::SomeStore.build
     store.category_name = category_name
 
     _, time, version, retrieved_id = store.get id, include: [:time, :version, :id]
-    refute(time.nil?)
-    refute(version.nil?)
-    refute(retrieved_id.nil?)
+    assert(!time.nil?)
+    assert(!version.nil?)
+    assert(!retrieved_id.nil?)
   end
 end

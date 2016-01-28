@@ -8,8 +8,7 @@ puts RUBY_DESCRIPTION
 require_relative '../init.rb'
 
 require 'securerandom'
-require 'runner'
-
+require 'test_bench'; TestBench.activate
 require 'event_store/entity_store/controls'
 
 Telemetry::Logger::AdHoc.activate

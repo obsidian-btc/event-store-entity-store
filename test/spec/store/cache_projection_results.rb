@@ -1,6 +1,6 @@
 require_relative 'store_init'
 
-describe "Cache Projection Results" do
+context "Cache Projection Results" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
@@ -14,7 +14,7 @@ describe "Cache Projection Results" do
 
   cached_entity = store.cache.get id
 
-  specify "Projected entity is cached" do
-    refute(cached_entity.nil?)
+  test "Projected entity is cached" do
+    assert(!cached_entity.nil?)
   end
 end

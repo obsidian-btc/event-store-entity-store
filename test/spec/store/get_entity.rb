@@ -1,6 +1,6 @@
 require_relative './store_init'
 
-describe "Get Entity from Store" do
+context "Get Entity from Store" do
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
 
   id = EventStore::EntityStore::Controls::StreamName.id(stream_name)
@@ -12,12 +12,12 @@ describe "Get Entity from Store" do
 
   entity = store.get id
 
-  describe "Entity Attributes" do
-    specify "some_attribute" do
+  context "Entity Attributes" do
+    test "some_attribute" do
       assert(entity.some_attribute == EventStore::EntityStore::Controls::Message.attribute)
     end
 
-    specify "some_time" do
+    test "some_time" do
       assert(entity.some_time == EventStore::EntityStore::Controls::Message.time)
     end
   end

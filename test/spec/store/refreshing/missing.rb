@@ -1,6 +1,6 @@
 require_relative '../store_init'
 
-describe "Get Entity Using the Missing Refresh Policy" do
+context "Get Entity Using the Missing Refresh Policy" do
   EventStore::EntityStore::Cache::RefreshPolicy.policies[:missing] = EventStore::EntityStore::Cache::RefreshPolicy::Missing
 
   stream_name = EventStore::EntityStore::Controls::Writer.write_batch 'someEntity'
@@ -15,12 +15,12 @@ describe "Get Entity Using the Missing Refresh Policy" do
 
   entity, version = store.get id, include: :version
 
-  describe "Cache is refreshed" do
-    specify "Entity" do
-      refute(entity.nil?)
+  context "Cache is refreshed" do
+    test "Entity" do
+      assert(!entity.nil?)
     end
 
-    specify "Version is updated" do
+    test "Version is updated" do
       assert(version == 1)
     end
   end
