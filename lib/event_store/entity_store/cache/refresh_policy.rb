@@ -39,8 +39,7 @@ module EventStore
         def self.policies
           @policies ||= {
             immediate: Immediate,
-            none: None,
-            # missing: Missing
+            none: None
           }
         end
 
@@ -119,6 +118,12 @@ module EventStore
         module Logger
           def logger
             @logger ||= Telemetry::Logger.get self
+          end
+        end
+
+        module Substitute
+          def self.build
+            RefreshPolicy::None
           end
         end
       end

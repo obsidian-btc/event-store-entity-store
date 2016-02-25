@@ -1,7 +1,13 @@
 ENV['CONSOLE_DEVICE'] ||= 'stdout'
 ENV['LOG_COLOR'] ||= 'on'
-ENV['LOG_LEVEL'] ||= 'trace'
-ENV['ENTITY_CACHE_SCOPE'] ||= 'exclusive'
+
+if ENV['LOG_LEVEL']
+  ENV['LOGGER'] ||= 'on'
+else
+  ENV['LOG_LEVEL'] ||= 'trace'
+end
+
+ENV['LOGGER'] ||= 'off'
 
 puts RUBY_DESCRIPTION
 
