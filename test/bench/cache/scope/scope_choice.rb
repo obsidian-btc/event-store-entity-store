@@ -22,18 +22,18 @@ context "Select Cache Scope Implementation" do
 end
 
 context "Default Cache Scope Implementation" do
-  test "Exclusive" do
+  test "Shared" do
     cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
-    assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Exclusive)
+    assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Shared)
   end
 
   test "Can be specified with the ENTITY_CACHE environment variable" do
     saved_cache_setting = EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_value
 
-    ENV[EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_name] = 'shared'
+    ENV[EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_name] = 'exclusive'
 
     cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
-    assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Shared)
+    assert(cache.is_a? EventStore::EntityStore::Cache::Scope::Exclusive)
 
     ENV[EventStore::EntityStore::Cache::Scope::Defaults::Name.env_var_name] = saved_cache_setting
   end

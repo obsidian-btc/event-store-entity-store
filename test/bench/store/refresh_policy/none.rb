@@ -6,6 +6,18 @@ context "None Cache Refresh Policy" do
   projection_class = EventStore::EntityStore::Controls::Projection::SomeProjection
   refresh = EventStore::EntityStore::Cache::RefreshPolicy::None
 
+  context "The entity is not previously cached" do
+    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
+
+    refresh.(id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity)
+
+    record = cache.get id
+
+    test "Doesn't cache the entity" do
+      assert(record.nil?)
+    end
+  end
+
   context "The entity is previously cached" do
     cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
 
@@ -25,18 +37,6 @@ context "None Cache Refresh Policy" do
       test "some_time is not projected" do
         assert(entity.some_time.nil?)
       end
-    end
-  end
-
-  context "The entity is not previously cached" do
-    cache = EventStore::EntityStore::Cache::Factory.build_cache :some_subject
-
-    refresh.(id, cache, projection_class, stream_name, EventStore::EntityStore::Controls::Entity)
-
-    record = cache.get id
-
-    test "Doesn't cache the entity" do
-      assert(record.nil?)
     end
   end
 end
