@@ -1,3 +1,4 @@
+fail "Do not further elaborate on this library until we break out the refresh policies into classes that can be dependencies; actually the design in general needs a thorough review" # [Nathan Ladd, Mon Mar 7 2016]
 ENV['CONSOLE_DEVICE'] ||= 'stdout'
 ENV['LOG_COLOR'] ||= 'on'
 
