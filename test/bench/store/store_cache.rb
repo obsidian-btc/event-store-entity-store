@@ -12,12 +12,9 @@ context "Store's Cache Scope" do
   end
 
   test "Error if unknown" do
-    begin
-      EventStore::EntityStore::Controls::Store.example cache_scope: SecureRandom.random_bytes
-    rescue EventStore::EntityStore::Cache::Scope::Error => error
+    assert proc { EventStore::EntityStore::Controls::Store.example cache_scope: SecureRandom.random_bytes } do
+      raises_error? EventStore::EntityStore::Cache::Scope::Error
     end
-
-    assert error
   end
 end
 

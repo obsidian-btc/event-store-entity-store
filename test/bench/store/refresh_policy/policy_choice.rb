@@ -21,12 +21,9 @@ end
 
 context "Unknown" do
   test "Error" do
-    begin
-      EventStore::EntityStore::Cache::RefreshPolicy.policy_class(SecureRandom.random_bytes)
-    rescue EventStore::EntityStore::Cache::RefreshPolicy::Error => error
+    assert proc { EventStore::EntityStore::Cache::RefreshPolicy.policy_class(SecureRandom.random_bytes) } do
+      raises_error? EventStore::EntityStore::Cache::RefreshPolicy::Error
     end
-
-    assert error
   end
 end
 

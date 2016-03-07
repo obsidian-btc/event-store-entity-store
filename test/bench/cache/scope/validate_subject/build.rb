@@ -9,30 +9,21 @@ context "Validate Cache Subject when Constructing the Cache" do
 
   context "Subject is invalid" do
     test "Subject is readable but not writeable" do
-      begin
-        EventStore::EntityStore::Controls::Scope::ReadableNotWritable.build :some_subject
-      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
+      assert proc { EventStore::EntityStore::Controls::Scope::ReadableNotWritable.build :some_subject } do
+        raises_error? EventStore::EntityStore::Cache::InvalidSubjectError
       end
-
-      assert error
     end
 
     test "Subject is not readable but writeable" do
-      begin
-        EventStore::EntityStore::Controls::Scope::WritableNotReadable.build :some_subject
-      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
+      assert proc { EventStore::EntityStore::Controls::Scope::WritableNotReadable.build :some_subject } do
+        raises_error? EventStore::EntityStore::Cache::InvalidSubjectError
       end
-
-      assert error
     end
 
     test "Subject is not readable and not writeable" do
-      begin
-        EventStore::EntityStore::Controls::Scope::NotReadableNotWritable.build :some_subject
-      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
+      assert proc { EventStore::EntityStore::Controls::Scope::NotReadableNotWritable.build :some_subject } do
+        raises_error? EventStore::EntityStore::Cache::InvalidSubjectError
       end
-
-      assert error
     end
   end
 end

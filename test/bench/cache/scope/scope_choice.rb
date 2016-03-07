@@ -12,12 +12,9 @@ context "Select Cache Scope Implementation" do
   end
 
   test "Error if unknown" do
-    begin
-      EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: SecureRandom.random_bytes
-    rescue EventStore::EntityStore::Cache::Scope::Error => error
+    assert proc { EventStore::EntityStore::Cache::Factory.build_cache :some_subject, scope: SecureRandom.random_bytes } do
+      raises_error? EventStore::EntityStore::Cache::Scope::Error
     end
-
-    assert error
   end
 end
 

@@ -18,22 +18,18 @@ context "Validate Subject when Putting test Into the Cache" do
   context "Subject is invalid" do
     test "Subject is readable and not writeable" do
       cache = EventStore::EntityStore::Controls::Scope::ReadableNotWritable.new :some_subject
-      begin
-        cache.put id, 'some value'
-      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
-      end
 
-      assert error
+      assert proc { cache.put id, 'some value' } do
+        raises_error? EventStore::EntityStore::Cache::InvalidSubjectError
+      end
     end
 
     test "Subject is not readable and not writeable" do
       cache = EventStore::EntityStore::Controls::Scope::NotReadableNotWritable.new :some_subject
-      begin
-        cache.put id, 'some value'
-      rescue EventStore::EntityStore::Cache::InvalidSubjectError => error
-      end
 
-      assert error
+      assert proc { cache.put id, 'some value' } do
+        raises_error? EventStore::EntityStore::Cache::InvalidSubjectError
+      end
     end
   end
 end
