@@ -13,6 +13,7 @@ module EventStore
       cls.send :dependency, :cache, EntityStore::Cache
       cls.send :dependency, :refresh, EntityStore::Cache::RefreshPolicy
       cls.send :dependency, :logger, Telemetry::Logger
+      cls.send :dependency, :session, EventStore::Client::HTTP::Session
       cls.send :virtual, :configure_dependencies
     end
 
@@ -41,12 +42,19 @@ module EventStore
     end
 
     module Build
-      def build(cache_scope: nil, refresh: nil)
+      def build(cache_scope: nil, refresh: nil, session: nil)
         logger.trace "Building entity store"
         new.tap do |instance|
           EntityStore::Cache.configure instance, instance.entity_class, scope: cache_scope
           EntityStore::Cache::RefreshPolicy.configure instance, refresh
           Telemetry::Logger.configure instance
+
+          if session
+            instance.session = session
+          else
+            EventStore::Client::HTTP::Session.configure instance
+          end
+
           instance.configure_dependencies
           logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
         end
@@ -54,9 +62,9 @@ module EventStore
     end
 
     module Configure
-      def configure(receiver, attr_name=nil, cache_scope: nil, refresh: nil)
+      def configure(receiver, attr_name=nil, cache_scope: nil, refresh: nil, session: nil)
         attr_name ||= :store
-        instance = build(cache_scope: cache_scope, refresh: refresh)
+        instance = build(cache_scope: cache_scope, refresh: refresh, session: session)
         receiver.send "#{attr_name}=", instance
         instance
       end
@@ -113,7 +121,7 @@ module EventStore
 
       stream_name = stream_name(id)
 
-      cache_record = refresh_policy.(id, cache, projection_class, stream_name, entity_class)
+      cache_record = refresh_policy.(id, cache, projection_class, stream_name, entity_class, session)
 
       logger.debug "Refreshed cache record (ID: #{id}, Refresh Policy: #{refresh_policy})"
 

@@ -10,11 +10,8 @@ context "Get with Expected Version When Stream Doesn't Exist" do
   store.category_name = category_name
 
   test "Is an error" do
-    begin
-      store.get id, expected_version: 11
-    rescue EventStore::EntityStore::Error => error
+    assert proc { store.get id, expected_version: 11 } do
+      raises_error? EventStore::EntityStore::Error
     end
-
-    assert error
   end
 end
