@@ -5,7 +5,7 @@ module EventStore
         module Immediate
           include RefreshPolicy
 
-          def self.call(id, cache, projection_class, stream_name, entity_class)
+          def self.call(id, cache, projection_class, stream_name, entity_class, session=nil)
             refresh(id, cache, projection_class, stream_name, entity_class) do |cache_record|
               unless cache_record
                 entity = new_entity(entity_class)
@@ -15,7 +15,7 @@ module EventStore
                 starting_position = cache_record.version + 1
               end
 
-              updated_cache_record = update_cache(entity, id, cache, projection_class, stream_name, starting_position)
+              updated_cache_record = update_cache(entity, id, cache, projection_class, stream_name, starting_position, session)
               updated_cache_record || cache_record
             end
           end

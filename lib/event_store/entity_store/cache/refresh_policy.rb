@@ -72,10 +72,10 @@ module EventStore
         end
 
         module UpdateCache
-          def update_cache(entity, id, cache, projection_class, stream_name, starting_position=nil)
+          def update_cache(entity, id, cache, projection_class, stream_name, starting_position=nil, session=nil)
             logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
-            version = projection_class.(entity, stream_name, starting_position: starting_position)
+            version = projection_class.(entity, stream_name, starting_position: starting_position, session: session)
 
             projected = !!version
 
