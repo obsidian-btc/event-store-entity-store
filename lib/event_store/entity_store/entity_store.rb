@@ -43,7 +43,7 @@ module EventStore
 
     module Build
       def build(cache_scope: nil, refresh: nil, session: nil)
-        logger.trace "Building entity store"
+        logger.opt_trace "Building entity store"
         new.tap do |instance|
           EntityStore::Cache.configure instance, instance.entity_class, scope: cache_scope
           EntityStore::Cache::RefreshPolicy.configure instance, refresh
@@ -56,7 +56,7 @@ module EventStore
           end
 
           instance.configure_dependencies
-          logger.debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
+          logger.opt_debug "Built entity store (Entity Class: #{instance.entity_class}, Category Name: #{instance.category_name}, Projection Class: #{instance.projection_class})"
         end
       end
     end
