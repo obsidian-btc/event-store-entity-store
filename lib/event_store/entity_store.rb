@@ -1,3 +1,5 @@
+require 'virtual'; Virtual.activate
+
 require 'event_store/entity_projection'
 
 require 'event_store/entity_store/cache/refresh_policy'

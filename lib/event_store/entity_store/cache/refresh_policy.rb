@@ -73,7 +73,7 @@ module EventStore
 
         module UpdateCache
           def update_cache(entity, id, cache, projection_class, stream_name, starting_position: nil, session: nil)
-            logger.trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
+            logger.opt_trace "Updating cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
             version = projection_class.(entity, stream_name, starting_position: starting_position, session: session)
 
@@ -84,7 +84,7 @@ module EventStore
               cache_record = cache.put id, entity, version
             end
 
-            logger.debug "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
+            logger.opt_debug "Updated cache (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity.class})"
 
             cache_record
           end
@@ -102,14 +102,14 @@ module EventStore
 
         module Refresh
           def refresh(id, cache, projection_class, stream_name, entity_class, &blk)
-            logger.trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.opt_trace "Refreshing (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
 
             cache_record = cache.get(id)
 
             cache_record = blk.(cache_record)
 
-            logger.debug "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
-            logger.data "Cache Record: #{cache_record.inspect}"
+            logger.opt_debug "Refreshed (ID: #{id}, Stream Name: #{stream_name}, Projection Class: #{projection_class}, Entity Class: #{entity_class})"
+            logger.opt_data "Cache Record: #{cache_record.inspect}"
 
             cache_record
           end

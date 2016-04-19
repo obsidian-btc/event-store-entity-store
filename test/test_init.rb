@@ -8,6 +8,7 @@ else
 end
 
 ENV['LOGGER'] ||= 'off'
+ENV['LOG_OPTIONAL'] ||= 'on'
 
 puts RUBY_DESCRIPTION
 
